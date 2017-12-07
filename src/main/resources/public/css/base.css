@@ -1,0 +1,37 @@
+* {
+    font-size: 12px;
+}
+
+table {
+    border-collapse: collapse;
+}
+th, td {
+    border: solid 1px black;
+}
+.number {
+    text-align: right;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+.mt5 {
+    margin-top: 5px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+.mb5 {
+    margin-bottom: 5px;
+}
+.m10 {
+    margin: 10px;
+}
+
+.row-table > .row:nth-child(even) {
+    background-color: #eee;
+}
+ruby > rt, ruby > rp {
+    rem: 50%;
+}

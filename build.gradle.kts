@@ -16,6 +16,11 @@ buildscript {
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     }
 }
 
@@ -37,6 +42,9 @@ repositories {
 dependencies {
     val kotlinVersion = extra["kotlin_version"] as String
     compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion")
+    testCompile("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
+    testCompile("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+
     compile("org.springframework.boot:spring-boot-starter-web:1.5.8.RELEASE")
 
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
