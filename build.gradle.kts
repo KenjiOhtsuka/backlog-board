@@ -8,7 +8,7 @@ group = "com.improve_future"
 version = "1.0-SNAPSHOT"
 
 buildscript {
-    val kotlinVersion = "1.1.61"
+    val kotlinVersion = "1.2.0"
     extra["kotlin_version"] = kotlinVersion
 
     repositories {
@@ -39,9 +39,9 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion")
     compile("org.springframework.boot:spring-boot-starter-web:1.5.8.RELEASE")
 
-    // 追加部分
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.postgresql:postgresql:42.1.4")
+    // https://mvnrepository.com/artifact/org.json/json
+    compile("org.json:json:20160810")
 
     val kotlinxHtmlVersion = "0.6.6"
     compile("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlinxHtmlVersion")
