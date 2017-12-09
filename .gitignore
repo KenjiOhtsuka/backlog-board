@@ -63,3 +63,10 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+
+
+# Application
+application-local.properties
+application-default.properties
+application-test.properties
+application.properties
