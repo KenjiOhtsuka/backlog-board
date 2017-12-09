@@ -69,4 +69,3 @@ gradle-app.setting
 application-local.properties
 application-default.properties
 application-test.properties
-application.properties

@@ -1,0 +1,8 @@
+#logging.level.root=DEBUG
+#logging.level.org.springframework.web=DEBUG
+
+
+# Backlog
+my.backlog.space_id=
+my.backlog.api_key=
+my.backlog.project_key=
