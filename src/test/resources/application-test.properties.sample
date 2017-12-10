@@ -6,4 +6,3 @@ org.gradle.daemon=true
 # Backlog
 my.backlog.space_id=
 my.backlog.api_key=
-my.backlog.project_key=

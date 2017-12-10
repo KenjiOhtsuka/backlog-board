@@ -10,7 +10,4 @@ class BacklogConfig {
 
     @Value("\${my.backlog.api_key}")
     lateinit var apiKey: String
-
-    @Value("\${my.backlog.project_key}")
-    lateinit var projectKey: String
 }

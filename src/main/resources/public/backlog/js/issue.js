@@ -3,7 +3,7 @@ $(function() {
         connectWith: "td",
         receive: function (event, ui) {
             jQuery.ajax({
-                url: "/backlog/issue/" + $(ui.item[0]).data("id"),
+                url: "/issue/" + $(ui.item[0]).data("id"),
                 method: "post",
                 data: {
                     _method: "PATCH",

@@ -1,8 +1,10 @@
 package com.improve_future.backlog_board.presentation.backlog
 
 import com.improve_future.backlog_board.domain.backlog.model.Issue
+import com.improve_future.backlog_board.domain.backlog.model.Project
 import com.improve_future.backlog_board.domain.backlog.model.User
 import com.improve_future.backlog_board.presentation.common.LayoutView
+import com.improve_future.backlog_board.presentation.core.row
 import com.improve_future.backlog_board.utility.DateUtility
 import kotlinx.html.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
@@ -17,8 +19,8 @@ object BacklogView {
     }
 
     fun HtmlContent.userIcon(user: User) {
-        a(user!!.urlString, "_blank") {
-            img(src = "/backlog/user/${user.id}/icon") {
+        a(user.urlString, "_blank") {
+            img(src = "/user/${user.id}/icon") {
                 classes = setOf("user_icon")
                 alt = user.name ?: ""
                 title = alt
@@ -81,6 +83,29 @@ object BacklogView {
                                 }
                             }
                         }
+                }
+            }
+        }
+    }
+
+    fun projectIndex(
+            redirectAttributes: RedirectAttributes,
+            projectList: List<Project>) = LayoutView.default(
+            redirectAttributes,
+            styleLinkArray = arrayOf("/backlog/css/issue.css")) {
+        projectList.forEach {
+            row {
+                div("col-sm-1") {
+                    a("/project/${it.key}/board") {
+                        img(src = "/project/${it.key}/icon") {
+                            classes = setOf("project_icon")
+                        }
+                    }
+                }
+                div("col-sm-11") {
+                    a("/project/${it.key}/board") {
+                        +(it.name ?: "")
+                    }
                 }
             }
         }

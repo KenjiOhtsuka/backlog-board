@@ -2,14 +2,16 @@ package com.improve_future.backlog_board.domain.backlog.repository
 
 import com.improve_future.backlog_board.config.BacklogConfig
 import com.improve_future.backlog_board.domain.backlog.factory.IssueFactory
+import com.improve_future.backlog_board.domain.backlog.factory.ProjectFactory
 import com.improve_future.backlog_board.domain.backlog.model.Issue
+import com.improve_future.backlog_board.domain.backlog.model.Project
 import com.improve_future.backlog_board.gateway.WebGateway
 import com.nulabinc.backlog4j.BacklogClient
 import com.nulabinc.backlog4j.BacklogClientFactory
 import com.nulabinc.backlog4j.CustomField as BacklogCustomField
 import com.nulabinc.backlog4j.Issue as BacklogIssue
-import com.nulabinc.backlog4j.Project
-import com.nulabinc.backlog4j.PullRequest
+import com.nulabinc.backlog4j.Project as BacklogProject
+import com.nulabinc.backlog4j.PullRequest as BacklogPullRequest
 import com.nulabinc.backlog4j.api.option.GetIssuesParams
 import com.nulabinc.backlog4j.api.option.PullRequestQueryParams
 import com.nulabinc.backlog4j.api.option.UpdateIssueParams
@@ -30,12 +32,22 @@ class BacklogRepository {
                         apiKey(backlogConfig.apiKey)
         BacklogClientFactory(configure).newClient()
     }
-    private val backlogProject: Project by lazy {
-        backlogGateway.getProject(backlogConfig.projectKey)
+
+    fun findAllProjects(): List<Project> {
+        return backlogGateway.projects.map {
+            ProjectFactory.createFromBacklogProject(
+                    backlogConfig.spaceId, it) }
     }
 
-    fun findAllIssues(): List<Issue> {
-        val issuesMap = findAllIssuesMap()
+    fun findProject(key: String): Project {
+        return ProjectFactory.createFromBacklogProject(
+                backlogConfig.spaceId,
+                backlogGateway.getProject(key))
+    }
+
+    fun findAllIssues(projectKey: String): List<Issue> {
+        val project = findProject(projectKey)
+        val issuesMap = findAllIssuesMap(project.id!!)
         val parentIssuesMap = mutableMapOf<Long, Issue>()
         issuesMap.forEach {
             if (it.value.parentIssueId == 0L)
@@ -71,18 +83,28 @@ class BacklogRepository {
                 ))
     }
 
+    fun retrieveProjectIcon(projectKey: String): ByteArray {
+        return WebGateway.getImage(
+                buildProjectIconUrl(projectKey),
+                mapOf(
+                        "apiKey" to backlogConfig.apiKey
+                )
+        )
+    }
+
     private fun buildUserIconUrl(userId: Long): URL {
         return URL(
                     "https://${backlogConfig.spaceId}.backlog.jp/api/v2/users/$userId/icon?apiKey=${backlogConfig.apiKey}")
     }
 
-    /**
-     * Find and return Id to Issue map
-     */
-    private fun findAllIssuesMap(): Map<Long, BacklogIssue> {
+    private fun buildProjectIconUrl(projectKey: String): URL {
+        return URL( "https://${backlogConfig.spaceId}.backlog.jp/api/v2/projects/$projectKey/image?apiKey=${backlogConfig.apiKey}")
+    }
+
+    private fun findAllIssuesMap(projectId: Long): Map<Long, BacklogIssue> {
         val issues = mutableMapOf<Long, BacklogIssue>()
         do {
-            val issueChunks = this.findAllIssuesPartly(issues.count())
+            val issueChunks = this.findAllIssuesPartly(projectId, issues.count())
             issueChunks.forEach { issues.put(it.id, it) }
         } while (issueChunks.count() > 0)
         return issues
@@ -104,17 +126,18 @@ class BacklogRepository {
     private fun buildFinishedPrCondition(): PullRequestQueryParams {
         var prParam = PullRequestQueryParams()
         prParam.statusType(listOf(
-                PullRequest.StatusType.Closed,
-                PullRequest.StatusType.Merged))
+                BacklogPullRequest.StatusType.Closed,
+                BacklogPullRequest.StatusType.Merged))
         return prParam
     }
 
     /**
      * Find and return Issue List
      */
-    private fun findAllIssuesPartly(offset: Number = 0): List<com.nulabinc.backlog4j.Issue> {
-        val issueParam: GetIssuesParams = GetIssuesParams(
-                mutableListOf(backlogProject.id))
+    private fun findAllIssuesPartly(
+            projectId: Long, offset: Number = 0): List<com.nulabinc.backlog4j.Issue> {
+        val issueParam: GetIssuesParams =
+                GetIssuesParams(mutableListOf(projectId))
         issueParam.statuses(
             listOf(
                 BacklogIssue.StatusType.Open,
