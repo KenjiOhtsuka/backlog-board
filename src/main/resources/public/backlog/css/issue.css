@@ -12,3 +12,9 @@
     padding: 2px; float: left; width: 100px; min-height: 90px; display: inline-block;
     border: gray solid 1px;
 }
+
+.user_icon {
+    max-width: 32px;
+    man-height: 32px;
+    border-radius: 16px;
+}
