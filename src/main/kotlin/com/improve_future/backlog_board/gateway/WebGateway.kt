@@ -1,6 +1,6 @@
 package com.improve_future.backlog_board.gateway
 
-import com.improve_future.backlog_board.JsonUtility
+import com.improve_future.backlog_board.utility.JsonUtility
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader

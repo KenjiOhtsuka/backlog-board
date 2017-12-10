@@ -1,6 +1,6 @@
 package com.improve_future.backlog_board.utility
 
-import com.improve_future.backlog_board.DateUtility
+import com.improve_future.backlog_board.utility.DateUtility
 import org.junit.Test
 import java.time.LocalDate
 import java.util.*

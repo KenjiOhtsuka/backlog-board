@@ -1,4 +1,4 @@
-package com.improve_future.backlog_board
+package com.improve_future.backlog_board.utility
 
 import org.json.JSONArray
 import org.json.JSONObject

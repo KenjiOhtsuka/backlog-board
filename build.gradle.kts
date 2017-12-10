@@ -44,20 +44,30 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion")
     testCompile("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testCompile("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-
     compile("org.springframework.boot:spring-boot-starter-web:1.5.8.RELEASE")
-
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.boot:spring-boot-starter-security")
     // https://mvnrepository.com/artifact/org.json/json
     compile("org.json:json:20160810")
 
     val kotlinxHtmlVersion = "0.6.6"
     compile("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlinxHtmlVersion")
 
+    compile("com.nulab-inc:backlog4j:2.2.0")
 }
 
 tasks.withType<KotlinCompile>(KotlinCompile::class.java).all {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+tasks.withType(org.gradle.language.jvm.tasks.ProcessResources::class.java) {
+    this.filter(
+            mapOf(
+                    "tokens" to mapOf(
+                            "activeProfile" to (project.properties["activeProfile"] ?: "default")
+                    )
+            ),
+            org.apache.tools.ant.filters.ReplaceTokens::class.java
+    )
 }

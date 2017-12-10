@@ -1,8 +1,7 @@
+org.gradle.daemon=true
+
 #logging.level.root=DEBUG
 #logging.level.org.springframework.web=DEBUG
-
-security.user.name=test
-security.user.password=test
 
 # Backlog
 my.backlog.space_id=
