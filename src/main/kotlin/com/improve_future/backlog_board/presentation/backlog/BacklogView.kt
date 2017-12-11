@@ -18,6 +18,23 @@ object BacklogView {
         else a(url, "_blank") { content() }
     }
 
+    fun FlowContent.navigation(projectKey: String) {
+        nav("row") {
+            ul("nav") {
+                li("nav-item") {
+                    a("/project/$projectKey/board") {
+                        +"Kanban Board"
+                    }
+                }
+                li("nav-item") {
+                    a("/project/$projectKey/issue_list") {
+                        +"Issues"
+                    }
+                }
+            }
+        }
+    }
+
     fun HtmlContent.userIcon(user: User) {
         a(user.urlString, "_blank") {
             img(src = "/user/${user.id}/icon") {
@@ -30,10 +47,12 @@ object BacklogView {
 
     fun index(
             redirectAttributes: RedirectAttributes,
+            projectKey: String,
             issues: List<Issue>) =
             LayoutView.default(
                     redirectAttributes,
                     styleLinkArray = arrayOf("/backlog/css/issue.css")) {
+        navigation(projectKey)
         table {
             thead {
                 tr {
@@ -88,35 +107,16 @@ object BacklogView {
         }
     }
 
-    fun projectIndex(
-            redirectAttributes: RedirectAttributes,
-            projectList: List<Project>) = LayoutView.default(
-            redirectAttributes,
-            styleLinkArray = arrayOf("/backlog/css/issue.css")) {
-        projectList.forEach {
-            row {
-                div("col-sm-1") {
-                    a("/project/${it.key}/board") {
-                        img(src = "/project/${it.key}/icon") {
-                            classes = setOf("project_icon")
-                        }
-                    }
-                }
-                div("col-sm-11") {
-                    a("/project/${it.key}/board") {
-                        +(it.name ?: "")
-                    }
-                }
-            }
-        }
-    }
-
     fun board(
             redirectAttributes: RedirectAttributes,
+            projectKey: String,
             parentIssues: List<Issue>, unitIssues: List<Issue>) = LayoutView.default(redirectAttributes, "Kanban Board",
             arrayOf(
                     "/backlog/css/issue.css",
                     "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")) {
+
+        navigation(projectKey)
+
         fun issueTile(issue: Issue) = div {
             classes = setOf(
                     "issue_tile",

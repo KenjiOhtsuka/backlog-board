@@ -19,7 +19,7 @@ class ProjectController {
     @ResponseBody
     fun index(attributes: RedirectAttributes): String {
         val projectList = backlogService.findAllProject()
-        return BacklogView.projectIndex(
+        return ProjectView.projectIndex(
                 attributes, projectList)
     }
 
@@ -33,6 +33,7 @@ class ProjectController {
         val issueList = backlogService.findAllIssue(projectKey)
         return BacklogView.board(
                 attributes,
+                projectKey,
                 issueList.filter { it.childIssues.count() > 0 },
                 issueList.filter { it.childIssues.count() == 0 })
     }
@@ -46,7 +47,7 @@ class ProjectController {
             attributes: RedirectAttributes): String {
         val issueList = backlogService.findAllIssue(projectKey)
         return BacklogView.index(
-                attributes, issueList)
+                attributes, projectKey, issueList)
     }
 
     @RequestMapping(
