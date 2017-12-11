@@ -23,11 +23,13 @@ object BacklogView {
             ul("nav") {
                 li("nav-item") {
                     a("/project/$projectKey/board") {
+                        classes = setOf("nav-link")
                         +"Kanban Board"
                     }
                 }
                 li("nav-item") {
                     a("/project/$projectKey/issue_list") {
+                        classes = setOf("nav-link")
                         +"Issues"
                     }
                 }
