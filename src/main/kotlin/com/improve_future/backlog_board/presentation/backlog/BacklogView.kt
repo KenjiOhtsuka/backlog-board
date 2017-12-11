@@ -1,8 +1,10 @@
 package com.improve_future.backlog_board.presentation.backlog
 
 import com.improve_future.backlog_board.domain.backlog.model.Issue
+import com.improve_future.backlog_board.domain.backlog.model.Project
 import com.improve_future.backlog_board.domain.backlog.model.User
 import com.improve_future.backlog_board.presentation.common.LayoutView
+import com.improve_future.backlog_board.presentation.core.row
 import com.improve_future.backlog_board.utility.DateUtility
 import kotlinx.html.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
@@ -16,9 +18,28 @@ object BacklogView {
         else a(url, "_blank") { content() }
     }
 
+    fun FlowContent.navigation(projectKey: String) {
+        nav("row") {
+            ul("nav") {
+                li("nav-item") {
+                    a("/project/$projectKey/board") {
+                        classes = setOf("nav-link")
+                        +"Kanban Board"
+                    }
+                }
+                li("nav-item") {
+                    a("/project/$projectKey/issue_list") {
+                        classes = setOf("nav-link")
+                        +"Issues"
+                    }
+                }
+            }
+        }
+    }
+
     fun HtmlContent.userIcon(user: User) {
-        a(user!!.urlString, "_blank") {
-            img(src = "/backlog/user/${user.id}/icon") {
+        a(user.urlString, "_blank") {
+            img(src = "/user/${user.id}/icon") {
                 classes = setOf("user_icon")
                 alt = user.name ?: ""
                 title = alt
@@ -28,10 +49,12 @@ object BacklogView {
 
     fun index(
             redirectAttributes: RedirectAttributes,
+            projectKey: String,
             issues: List<Issue>) =
             LayoutView.default(
                     redirectAttributes,
                     styleLinkArray = arrayOf("/backlog/css/issue.css")) {
+        navigation(projectKey)
         table {
             thead {
                 tr {
@@ -88,10 +111,14 @@ object BacklogView {
 
     fun board(
             redirectAttributes: RedirectAttributes,
+            projectKey: String,
             parentIssues: List<Issue>, unitIssues: List<Issue>) = LayoutView.default(redirectAttributes, "Kanban Board",
             arrayOf(
                     "/backlog/css/issue.css",
                     "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")) {
+
+        navigation(projectKey)
+
         fun issueTile(issue: Issue) = div {
             classes = setOf(
                     "issue_tile",

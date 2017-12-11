@@ -15,6 +15,11 @@
 
 .user_icon {
     max-width: 32px;
-    man-height: 32px;
+    max-height: 32px;
     border-radius: 16px;
+}
+
+.project_icon {
+    max-width: 31px;
+    max-height: 31px;
 }

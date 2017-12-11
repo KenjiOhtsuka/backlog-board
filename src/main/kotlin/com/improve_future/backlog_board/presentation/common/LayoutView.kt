@@ -27,6 +27,7 @@ object LayoutView: RedirectAttributesHandler() {
                     menuGroup(
                             "Issue",
                             mapOf(
+                                    "Project List" to "/project",
                                     "Not Yet Closed Issiess" to
                                             "/backlog",
                                     "Kanban" to
