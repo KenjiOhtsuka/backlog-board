@@ -16,6 +16,10 @@ class BacklogService {
         return backlogRepository.findAllIssues(projectKey)
     }
 
+    fun findAllIssueForGanttChart(projectKey: String): List<Issue> {
+        return backlogRepository.findAllIssuesInStartOrder(projectKey)
+    }
+
     fun findAllProject(): List<Project> {
         return backlogRepository.findAllProjects()
     }
