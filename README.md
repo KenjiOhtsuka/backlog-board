@@ -14,13 +14,6 @@ This works on JDK 1.8.
 
 If you want to create another environment, copy `application-default.properties.sample` to `application-your_env.properties`, and execute `./gradlew bootrun -PactiveProfile=your_env`
 
-### Example
-
-* `./gradlew deployWar -PactiveProfile=development -PserverRole=dev`
-    * deploy after building war and test
-* `./gradlew deployWar -PactiveProfile=development -PserverRole=dev -x war -x test`
-    * deploy without building war or test
-
 ## Test
 
 * all test
