@@ -7,6 +7,7 @@ import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.math.acos
 
 object DateUtility {
     // <editor-fold defaultstate="collapsed" desc="date-formatter">
@@ -137,6 +138,29 @@ object DateUtility {
     fun createNullableDateFromHyphenSeparatedString(dateString: String?): Date? {
         if (dateString == null) return null
         return createDateFromHyphenSeparatedString(dateString)
+    }
+
+    fun addDate(date: Date, dayCount: Int): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.DATE,  dayCount)
+        return calendar.time
+    }
+
+    fun getDay(date: Date): Int {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return calendar[Calendar.DATE]
+    }
+
+    fun getMonth(date: Date): Int {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return calendar[Calendar.MONTH] + 1
+    }
+
+    fun getDifferenceInDay(aDate: Date, bDate: Date): Long {
+        return (bDate.time - aDate.time) / (1000 * 60 * 60 * 24)
     }
     // </editor-fold>
 

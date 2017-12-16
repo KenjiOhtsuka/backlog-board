@@ -47,26 +47,34 @@ class BacklogRepository {
 
     fun findAllIssues(projectKey: String): List<Issue> {
         val project = findProject(projectKey)
-        val issuesMap = findAllIssuesMap(project.id!!)
-        val parentIssuesMap = mutableMapOf<Long, Issue>()
-        issuesMap.forEach {
-            if (it.value.parentIssueId == 0L)
-                parentIssuesMap.put(
-                        it.key,
-                        IssueFactory.createFromBacklogIssue(
-                                backlogConfig.spaceId, it.value))
-        }
-        issuesMap.forEach {
-            if (it.value.parentIssueId != 0L)
-                parentIssuesMap[it.value.parentIssueId]?.addChild(
-                        IssueFactory.createFromBacklogIssue(backlogConfig.spaceId, it.value)) ?:
-                        parentIssuesMap.put(
-                                it.key,
-                                IssueFactory.createFromBacklogIssue(backlogConfig.spaceId, it.value))
-        }
-        parentIssuesMap.forEach{
-            it.value.childIssues.sortBy { it.dueDate }}
-        return parentIssuesMap.values.toList().sortedBy { it.dueDate }
+        val issueParam = GetIssueParam(listOf(project.id!!))
+        issueParam.statuses(
+                listOf(
+                        BacklogIssue.StatusType.Open,
+                        BacklogIssue.StatusType.InProgress,
+                        BacklogIssue.StatusType.Resolved))
+        issueParam.sort(GetIssuesParams.SortKey.DueDate)
+        issueParam.order(GetIssuesParams.Order.Asc)
+        issueParam.count(100)
+
+        return findAllIssueMap(issueParam).values.toList()
+    }
+
+    fun findAllIssuesInStartOrder(projectKey: String): List<Issue> {
+        val project = findProject(projectKey)
+        val issueParam = GetIssueParam(listOf(project.id!!))
+        issueParam.statuses(
+                listOf(
+                        BacklogIssue.StatusType.Open,
+                        BacklogIssue.StatusType.InProgress,
+                        BacklogIssue.StatusType.Resolved))
+        issueParam.sort(GetIssuesParams.SortKey.StartDate)
+        issueParam.order(GetIssuesParams.Order.Asc)
+        issueParam.sort(GetIssuesParams.SortKey.DueDate)
+        issueParam.order(GetIssuesParams.Order.Asc)
+        issueParam.count(100)
+
+        return findAllIssueMap(issueParam).values.toList()
     }
 
     fun updateStatus(id: Long, statusId: Long) {
@@ -101,13 +109,25 @@ class BacklogRepository {
         return URL( "https://${backlogConfig.spaceId}.backlog.jp/api/v2/projects/$projectKey/image?apiKey=${backlogConfig.apiKey}")
     }
 
-    private fun findAllIssuesMap(projectId: Long): Map<Long, BacklogIssue> {
-        val issues = mutableMapOf<Long, BacklogIssue>()
+    private fun findAllIssueMap(condition: GetIssueParam): Map<Long, Issue> {
+        val issueList = mutableListOf<Issue>()
+        val parentIssuesMap = mutableMapOf<Long, Issue>()
         do {
-            val issueChunks = this.findAllIssuesPartly(projectId, issues.count())
-            issueChunks.forEach { issues.put(it.id, it) }
+            val param = condition.clone()
+            param.offset(issueList.count().toLong())
+            val issueChunks = this.findIssues(param)
+            issueList += issueChunks
         } while (issueChunks.count() > 0)
-        return issues
+        issueList.forEach {
+            if (!it.isChild())
+                parentIssuesMap.put(it.id!!, it)
+        }
+        issueList.forEach {
+            if (it.isChild())
+                parentIssuesMap[it.parentIssueId!!]?.addChild(it) ?:
+                        parentIssuesMap.put(it.id!!, it)
+        }
+        return parentIssuesMap
     }
 
     private fun buildClosedIssueCondition(projectId: Long):
@@ -134,20 +154,9 @@ class BacklogRepository {
     /**
      * Find and return Issue List
      */
-    private fun findAllIssuesPartly(
-            projectId: Long, offset: Number = 0): List<com.nulabinc.backlog4j.Issue> {
-        val issueParam: GetIssuesParams =
-                GetIssuesParams(mutableListOf(projectId))
-        issueParam.statuses(
-            listOf(
-                BacklogIssue.StatusType.Open,
-                BacklogIssue.StatusType.InProgress,
-                BacklogIssue.StatusType.Resolved))
-        issueParam.sort(GetIssuesParams.SortKey.DueDate)
-        issueParam.order(GetIssuesParams.Order.Asc)
-        issueParam.offset(offset.toLong())
-        issueParam.count(100)
-        return backlogGateway.getIssues(issueParam)
+    private fun findIssues(condition: GetIssueParam): List<Issue> {
+        return backlogGateway.getIssues(condition).
+                map { IssueFactory.createFromBacklogIssue(backlogConfig.spaceId, it) }
     }
 
     private fun createIssueFromBacklogIssue(backlogIssue: BacklogIssue): Issue {

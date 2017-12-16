@@ -18,34 +18,6 @@ object BacklogView {
         else a(url, "_blank") { content() }
     }
 
-    fun FlowContent.navigation(projectKey: String) {
-        nav("row") {
-            ul("nav") {
-                li("nav-item") {
-                    a("/project/$projectKey/board") {
-                        classes = setOf("nav-link")
-                        +"Kanban Board"
-                    }
-                }
-                li("nav-item") {
-                    a("/project/$projectKey/issue_list") {
-                        classes = setOf("nav-link")
-                        +"Issues"
-                    }
-                }
-            }
-        }
-    }
-
-    fun HtmlContent.userIcon(user: User) {
-        a(user.urlString, "_blank") {
-            img(src = "/user/${user.id}/icon") {
-                classes = setOf("user_icon")
-                alt = user.name ?: ""
-                title = alt
-            }
-        }
-    }
 
     fun index(
             redirectAttributes: RedirectAttributes,

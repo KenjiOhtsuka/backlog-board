@@ -1,6 +1,7 @@
 package com.improve_future.backlog_board.presentation.core
 
 import org.springframework.ui.Model
+import org.springframework.ui.ModelMap as UiModelMap
 
 class ModelMap(model: Model) {
     val map: Map<String, Any?>

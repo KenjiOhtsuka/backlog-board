@@ -6,8 +6,10 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
+import org.springframework.ui.ModelMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap
 
 @Controller
 @RequestMapping("project")
@@ -19,7 +21,7 @@ class ProjectController {
     @ResponseBody
     fun index(attributes: RedirectAttributes): String {
         val projectList = backlogService.findAllProject()
-        return ProjectView.projectIndex(
+        return ProjectView.index(
                 attributes, projectList)
     }
 
@@ -36,6 +38,17 @@ class ProjectController {
                 projectKey,
                 issueList.filter { it.childIssues.count() > 0 },
                 issueList.filter { it.childIssues.count() == 0 })
+    }
+
+    @RequestMapping(
+            "{key}/gantt",
+            method = arrayOf(RequestMethod.GET))
+    @ResponseBody
+    fun gantt(
+            @PathVariable("key") projectKey: String,
+            redirectAttributes: RedirectAttributesModelMap): String {
+        val issueList = backlogService.findAllIssueForGanttChart(projectKey)
+        return ProjectView.gantt(redirectAttributes, projectKey, issueList)
     }
 
     @RequestMapping(
