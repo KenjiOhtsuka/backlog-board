@@ -1,13 +1,10 @@
 package com.improve_future.backlog_board.domain.backlog.repository
 
-import com.improve_future.backlog_board.config.BacklogConfig
 import com.improve_future.backlog_board.domain.backlog.factory.IssueFactory
 import com.improve_future.backlog_board.domain.backlog.factory.ProjectFactory
 import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.model.Project
 import com.improve_future.backlog_board.gateway.WebGateway
-import com.nulabinc.backlog4j.BacklogClient
-import com.nulabinc.backlog4j.BacklogClientFactory
 import com.nulabinc.backlog4j.CustomField as BacklogCustomField
 import com.nulabinc.backlog4j.Issue as BacklogIssue
 import com.nulabinc.backlog4j.Project as BacklogProject
@@ -15,9 +12,6 @@ import com.nulabinc.backlog4j.PullRequest as BacklogPullRequest
 import com.nulabinc.backlog4j.api.option.GetIssuesParams
 import com.nulabinc.backlog4j.api.option.PullRequestQueryParams
 import com.nulabinc.backlog4j.api.option.UpdateIssueParams
-import com.nulabinc.backlog4j.conf.BacklogConfigure
-import com.nulabinc.backlog4j.conf.BacklogJpConfigure
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.net.URL
 
