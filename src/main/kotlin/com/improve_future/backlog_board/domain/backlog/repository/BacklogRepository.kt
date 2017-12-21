@@ -22,17 +22,7 @@ import org.springframework.stereotype.Component
 import java.net.URL
 
 @Component
-class BacklogRepository {
-    @Autowired
-    lateinit private var backlogConfig: BacklogConfig
-
-    private val backlogGateway: BacklogClient by lazy {
-        val configure: BacklogConfigure =
-                BacklogJpConfigure(backlogConfig.spaceId).
-                        apiKey(backlogConfig.apiKey)
-        BacklogClientFactory(configure).newClient()
-    }
-
+class BacklogRepository: AbstractBacklogRepository() {
     fun findAllProjects(): List<Project> {
         return backlogGateway.projects.map {
             ProjectFactory.createFromBacklogProject(
