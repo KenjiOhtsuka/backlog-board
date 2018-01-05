@@ -3,6 +3,7 @@ package com.improve_future.backlog_board.domain.backlog.model
 import com.improve_future.backlog_board.domain.backlog.master.IssuePriority
 import com.improve_future.backlog_board.domain.backlog.master.IssuePriorityMaster
 import com.nulabinc.backlog4j.Status
+import java.math.BigDecimal
 import com.nulabinc.backlog4j.CustomField as BacklogCustomField
 import com.nulabinc.backlog4j.Issue as BacklogIssue
 import java.util.*
@@ -24,6 +25,8 @@ class Issue: AbstractBacklog() {
     var dueDate: Date? = null
     var startDate: Date? = null
     var status: Status? = null
+    var estimatedHour: BigDecimal? = null
+    var actualHour: BigDecimal? = null
     var priorityId: Long? = null
     var priorityType: com.nulabinc.backlog4j.Issue.PriorityType?
     get() {

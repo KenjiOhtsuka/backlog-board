@@ -107,7 +107,7 @@ object LayoutView: RedirectAttributesHandler() {
                         }
                     }
 
-                    div("container-fluid") {
+                    div("container") {
                         block()
                     }
                     script(src = "https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js") {}

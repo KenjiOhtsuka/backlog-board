@@ -1,13 +1,13 @@
 package com.improve_future.backlog_board.presentation.backlog
 
-import com.improve_future.backlog_board.domain.backlog.model.Issue
-import com.improve_future.backlog_board.domain.backlog.model.Project
-import com.improve_future.backlog_board.domain.backlog.model.User
+import com.improve_future.backlog_board.domain.backlog.model.*
 import com.improve_future.backlog_board.presentation.common.LayoutView
+import com.improve_future.backlog_board.presentation.core.col
 import com.improve_future.backlog_board.presentation.core.row
 import com.improve_future.backlog_board.utility.DateUtility
 import kotlinx.html.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import com.nulabinc.backlog4j.Issue as BacklogIssue
 
 object BacklogView {
     fun FlowContent.messageTag(message: String?, isOverDue: Boolean, url: String? = null) {
@@ -17,7 +17,6 @@ object BacklogView {
         if (url == null) content()
         else a(url, "_blank") { content() }
     }
-
 
     fun index(
             redirectAttributes: RedirectAttributes,
@@ -84,6 +83,10 @@ object BacklogView {
     fun board(
             redirectAttributes: RedirectAttributes,
             projectKey: String,
+            milestoneId: Long?,
+            milestoneList: List<Milestone>,
+            categoryId: Long?,
+            categoryList: List<Category>,
             parentIssues: List<Issue>, unitIssues: List<Issue>) = LayoutView.default(redirectAttributes, "Kanban Board",
             arrayOf(
                     "/backlog/css/issue.css",
@@ -95,9 +98,9 @@ object BacklogView {
             classes = setOf(
                     "issue_tile",
                     when (issue.priorityType) {
-                        com.nulabinc.backlog4j.Issue.PriorityType.High ->
+                        BacklogIssue.PriorityType.High ->
                                 "priority_high"
-                        com.nulabinc.backlog4j.Issue.PriorityType.Low ->
+                        BacklogIssue.PriorityType.Low ->
                                 "priority_low"
                         else ->
                                 "priority_normal"
@@ -109,6 +112,11 @@ object BacklogView {
                     DateUtility.formatToNullableHyphenSeparatedDate(issue.dueDate),
                     issue.isOverDue())
             if (issue.assignee != null) div { userIcon(issue.assignee!!) }
+            +"Est. "
+            span("estimated_hour") { +issue.estimatedHour.toString() }
+            +" / "
+            +"Act. "
+            span("actual_hour") { +issue.actualHour.toString() }
         }
 
         fun issuesOfThePhase(issues: List<Issue>, status: com.nulabinc.backlog4j.Issue.StatusType) {
@@ -116,48 +124,114 @@ object BacklogView {
             filteredIssues.forEach { issueTile(it) }
         }
 
-        table {
-            thead {
-                tr {
-                    th { }
-                    th { +"ToDo" }
-                    th { +"Doing" }
-                    th { +"Review" }
-                }
-            }
-            tbody {
-                parentIssues.forEach {
-                    tr {
-                        td { issueTile(it) }
-                        td("sortable") {
-                            attributes["data-status-id"] = com.nulabinc.backlog4j.Issue.StatusType.Open.intValue.toString()
-                            issuesOfThePhase(it.childIssues, com.nulabinc.backlog4j.Issue.StatusType.Open)
-                        }
-                        td("sortable") {
-                            attributes["data-status-id"] = com.nulabinc.backlog4j.Issue.StatusType.InProgress.intValue.toString()
-                            issuesOfThePhase(it.childIssues, com.nulabinc.backlog4j.Issue.StatusType.InProgress)
-                        }
-                        td("sortable") {
-                            attributes["data-status-id"] = com.nulabinc.backlog4j.Issue.StatusType.Resolved.intValue.toString()
-                            issuesOfThePhase(it.childIssues, com.nulabinc.backlog4j.Issue.StatusType.Resolved)
-                        }
+        getForm() {
+            classes = setOf("form-inline")
+            select {
+                name = "milestone_id"
+                option { }
+                milestoneList.forEach {
+                    option {
+                        value = it.id.toString()
+                        if (milestoneId == it.id) selected = true
+                        +it.name.orEmpty()
                     }
                 }
-                tr {
-                    td { }
-                    td("sortable") {
-                        attributes["data-status-id"] = com.nulabinc.backlog4j.Issue.StatusType.Open.intValue.toString()
-                        issuesOfThePhase(unitIssues, com.nulabinc.backlog4j.Issue.StatusType.Open) }
-                    td("sortable") {
-                        attributes["data-status-id"] = com.nulabinc.backlog4j.Issue.StatusType.InProgress.intValue.toString()
-                        issuesOfThePhase(unitIssues, com.nulabinc.backlog4j.Issue.StatusType.InProgress) }
-                    td("sortable") {
-                        attributes["data-status-id"] = com.nulabinc.backlog4j.Issue.StatusType.Resolved.intValue.toString()
-                        issuesOfThePhase(unitIssues, com.nulabinc.backlog4j.Issue.StatusType.Resolved) }
+            }
+            select {
+                name = "category_id"
+                option { }
+                categoryList.forEach {
+                    option {
+                        value = it.id.toString()
+                        if (categoryId == it.id) selected = true
+                        +it.name.orEmpty()
+                    }
+                }
+            }
+            button { +"Search" }
+        }
+
+        row {
+            section("col board_column") {
+                h2 { +"Group" }
+                div {
+                    +"Est. "
+                    span("estimated_hour") { 0 }
+                    +" / Act. "
+                    span("actual_hour") { 0 }
+                }
+                div("board_column_body") {
+                    parentIssues.forEach {
+                        issueTile(it)
+                    }
+                    unitIssues.forEach {
+                        issueTile(it)
+                    }
+                }
+            }
+            section("col board_column") {
+                h2 { +"To Do" }
+                div {
+                    span("estimated_hour") { 0 }
+                    +"/"
+                    span("actual_hour") { 0 }
+                }
+                div("sortable board_column_body") {
+                    attributes["data-status-id"] = BacklogIssue.StatusType.Open.intValue.toString()
+                    parentIssues.forEach {
+                        issuesOfThePhase(it.childIssues, BacklogIssue.StatusType.Open)
+                    }
+                    issuesOfThePhase(unitIssues, BacklogIssue.StatusType.Open)
+                }
+            }
+            section("col board_column") {
+                h2 { +"Doing" }
+                div {
+                    span("estimated_hour") { 0 }
+                    +"/"
+                    span("actual_hour") { 0 }
+                }
+                div("sortable board_column_body ui-sortable") {
+                    attributes["data-status-id"] = com.nulabinc.backlog4j.Issue.StatusType.InProgress.intValue.toString()
+                    parentIssues.forEach {
+                        issuesOfThePhase(it.childIssues, BacklogIssue.StatusType.InProgress)
+                    }
+                    issuesOfThePhase(unitIssues, BacklogIssue.StatusType.InProgress)
+                }
+            }
+            section("col board_column") {
+                h2 { +"Review" }
+                div {
+                    span("estimated_hour") { 0 }
+                    +"/"
+                    span("actual_hour") { 0 }
+                }
+                div("sortable board_column_body") {
+                    attributes["data-status-id"] = BacklogIssue.StatusType.Resolved.intValue.toString()
+                    parentIssues.forEach {
+                        issuesOfThePhase(it.childIssues, BacklogIssue.StatusType.Resolved)
+                    }
+                    issuesOfThePhase(unitIssues, BacklogIssue.StatusType.Resolved)
+                }
+            }
+            section("col board_column") {
+                h2 { +"Done" }
+                div {
+                    span("estimated_hour") { 0 }
+                    +"/"
+                    span("actual_hour") { 0 }
+                }
+                div("sortable board_column_body") {
+                    attributes["data-status-id"] = BacklogIssue.StatusType.Closed.intValue.toString()
+                    parentIssues.forEach {
+                        issuesOfThePhase(it.childIssues, BacklogIssue.StatusType.Closed)
+                    }
+                    issuesOfThePhase(unitIssues, BacklogIssue.StatusType.Closed)
                 }
             }
         }
+
         script(src = "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js") {}
-        script(src = "/backlog/js/issue.js" ,type = ScriptType.textJavaScript) {}
+        script(src = "/backlog/js/issue.js", type = ScriptType.textJavaScript) {}
     }
 }

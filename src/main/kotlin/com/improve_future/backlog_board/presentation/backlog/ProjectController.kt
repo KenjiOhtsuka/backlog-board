@@ -1,5 +1,6 @@
 package com.improve_future.backlog_board.presentation.backlog
 
+import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.service.BacklogService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -31,11 +32,23 @@ class ProjectController {
     @ResponseBody
     fun board(
             @PathVariable("key") projectKey: String,
+            @RequestParam("milestone_id", required = false) milestoneId: Long? = null,
+            @RequestParam("category_id", required = false) categoryId: Long? = null,
             attributes: RedirectAttributes): String {
-        val issueList = backlogService.findAllIssue(projectKey)
+        val milestoneList = backlogService.findAllMilestone(projectKey)
+        val issueList =
+            if (milestoneId != null) backlogService.findAllIssue(projectKey, milestoneId, categoryId)
+            else emptyList()
+
+        val categoryList = backlogService.findAllCategory(projectKey)
+
         return BacklogView.board(
                 attributes,
                 projectKey,
+                milestoneId,
+                milestoneList,
+                categoryId,
+                categoryList,
                 issueList.filter { it.childIssues.count() > 0 },
                 issueList.filter { it.childIssues.count() == 0 })
     }
@@ -51,17 +64,17 @@ class ProjectController {
         return ProjectView.gantt(redirectAttributes, projectKey, issueList)
     }
 
-    @RequestMapping(
-            "{key}/issue_list",
-            method = arrayOf(RequestMethod.GET))
-    @ResponseBody
-    fun issueList(
-            @PathVariable("key") projectKey: String,
-            attributes: RedirectAttributes): String {
-        val issueList = backlogService.findAllIssue(projectKey)
-        return BacklogView.index(
-                attributes, projectKey, issueList)
-    }
+//    @RequestMapping(
+//            "{key}/issue_list",
+//            method = arrayOf(RequestMethod.GET))
+//    @ResponseBody
+//    fun issueList(
+//            @PathVariable("key") projectKey: String,
+//            attributes: RedirectAttributes): String {
+//        val issueList = backlogService.findAllIssue(projectKey)
+//        return BacklogView.index(
+//                attributes, projectKey, issueList)
+//    }
 
     @RequestMapping(
             "{key}/icon",

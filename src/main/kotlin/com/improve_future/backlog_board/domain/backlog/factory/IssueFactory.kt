@@ -25,6 +25,8 @@ object IssueFactory {
         issue.priorityId = backlogIssue.priority.id
         issue.creator = UserFactory.createFromBacklogUser(
                 spaceKey, backlogIssue.createdUser)
+        issue.estimatedHour = backlogIssue.estimatedHours
+        issue.actualHour = backlogIssue.actualHours
 
         return issue
     }

@@ -6,10 +6,16 @@ import com.improve_future.backlog_board.presentation.lang.CommonLang
 import kotlinx.html.*
 
 
-fun FlowContent.row(classes : String? = null, block : DIV.() -> Unit = {}): Unit {
+fun FlowContent.row(classes : String? = null, block : DIV.() -> Unit = {}) =
+        divWithClass("row", classes, block)
+
+fun FlowContent.col(classes : String? = null, block : DIV.() -> Unit = {}) =
+        divWithClass("col", classes, block)
+
+private fun FlowContent.divWithClass(defaultClass: String, classes : String? = null, block : DIV.() -> Unit = {}): Unit {
     val _classes: String
-    if (classes.isNullOrBlank()) _classes = "row"
-    else _classes = classes + " row"
+    if (classes.isNullOrBlank()) _classes = defaultClass
+    else _classes = classes + " " + defaultClass
     return div(_classes, block)
 }
 
