@@ -15,9 +15,6 @@ import java.time.YearMonth
 @Service
 class BacklogService {
     @Autowired
-    lateinit private var issueRepository: IssueRepository
-
-    @Autowired
     lateinit private var backlogRepository: BacklogRepository
 
     @Autowired
@@ -26,20 +23,8 @@ class BacklogService {
     @Autowired
     lateinit private var categoryRepository: CategoryRepository
 
-    fun findAllIssue(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
-        return backlogRepository.findAllIssues(projectKey, milestoneId, categoryId)
-    }
-
-    fun findAllIssueForGanttChart(projectKey: String): List<Issue> {
-        return backlogRepository.findAllIssuesInStartOrder(projectKey)
-    }
-
     fun findAllProject(): List<Project> {
         return backlogRepository.findAllProjects()
-    }
-
-    fun updateStatus(id: Long, statusId: Long) {
-        backlogRepository.updateStatus(id, statusId)
     }
 
     fun retrieveUserIcon(userId: Long): ByteArray {
@@ -56,9 +41,5 @@ class BacklogService {
 
     fun findAllCategory(projectKey: String): List<Category> {
         return categoryRepository.findAllCategory(projectKey)
-    }
-
-    fun findIssue(id: Long): Issue {
-        return issueRepository.findOne(id)
     }
 }

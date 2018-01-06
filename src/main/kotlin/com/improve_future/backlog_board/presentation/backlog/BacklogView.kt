@@ -154,7 +154,7 @@ object BacklogView {
 
         fun boardColumn(title: String, issueList: List<Issue>, statusType: BacklogIssue.StatusType, isFixed: Boolean = false) {
             section("col board_column") {
-                h2 { +"To Do" }
+                h2 { +title }
                 div {
                     span("estimated_hour") { }
                     +"/"
@@ -196,9 +196,17 @@ object BacklogView {
 
         popUp() {
             p { id = "modal_detail" }
+            div {
+                +"Est. "
+                span { id = "modal_estimated_hour"}
+                +" / Act. "
+                span { id = "modal_actual_hour" }
+            }
         }
 
         script(src = "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js") {}
-        script(src = "/backlog/js/issue.js", type = ScriptType.textJavaScript) {}
+        script(src = "/backlog/js/issue.js", type = ScriptType.textJavaScript) {
+            attributes["charset"] = "UTF-8"
+        }
     }
 }

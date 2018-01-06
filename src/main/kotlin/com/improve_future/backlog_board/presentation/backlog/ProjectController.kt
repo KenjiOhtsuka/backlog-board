@@ -2,6 +2,7 @@ package com.improve_future.backlog_board.presentation.backlog
 
 import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.service.BacklogService
+import com.improve_future.backlog_board.domain.backlog.service.IssueService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -16,7 +17,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap
 @RequestMapping("project")
 class ProjectController {
     @Autowired
-    lateinit var backlogService: BacklogService
+    lateinit private var backlogService: BacklogService
+
+    @Autowired
+    lateinit private var issueService: IssueService
 
     @RequestMapping(method = arrayOf(RequestMethod.GET))
     @ResponseBody
@@ -37,7 +41,7 @@ class ProjectController {
             attributes: RedirectAttributes): String {
         val milestoneList = backlogService.findAllMilestone(projectKey)
         val issueList =
-            if (milestoneId != null) backlogService.findAllIssue(projectKey, milestoneId, categoryId)
+            if (milestoneId != null) issueService.findAllIssue(projectKey, milestoneId, categoryId)
             else emptyList()
 
         val categoryList = backlogService.findAllCategory(projectKey)
@@ -60,7 +64,7 @@ class ProjectController {
     fun gantt(
             @PathVariable("key") projectKey: String,
             redirectAttributes: RedirectAttributesModelMap): String {
-        val issueList = backlogService.findAllIssueForGanttChart(projectKey)
+        val issueList = issueService.findAllIssueForGanttChart(projectKey)
         return ProjectView.gantt(redirectAttributes, projectKey, issueList)
     }
 

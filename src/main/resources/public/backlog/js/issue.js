@@ -18,13 +18,29 @@ $(function() {
         sortable({
             connectWith: ".board_column_body.sortable",
             receive: function (event, ui) {
-                jQuery.ajax({
-                    url: "/issue/" + $(ui.item[0]).data("id"),
-                    method: "post",
-                    data: {
-                        _method: "PATCH",
-                        status_id: $(this).data("status-id")
+                var newStatusId = $(this).data("status-id");
+                var newData = {
+                    status_id: newStatusId
+                };
+                if (newStatusId == 4) {
+                    var actualHour = prompt("実績工数を入力してください。 Please input actual hours. (h)");
+                    if (actualHour != null && actualHour.match(/^[0-9]+(\.[0-9]+)?/) != null)
+                        newData["actual_hour"] = actualHour
+                    else {
+                        $(".sortable").sortable("cancel");
+                        return;
                     }
+                }
+                jQuery.ajax({
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    url: "/issue/" + $(ui.item[0]).data("id"),
+                    method: "patch",
+                    data: JSON.stringify({
+                        _method: "PATCH",
+                        issue: newData
+                    })
                 });
                 updateHours();
             }
@@ -37,8 +53,13 @@ $(function() {
                 success: function (dataJson) {
                     var divId = "modal";
                     var issueJson = dataJson.data["issue_list"][0];
-                    $("#" + divId + "_title").text(issueJson["title"]);
-                    $("#" + divId + "_detail").text(issueJson["detail"]);
+                    var targetAttributeArray = [
+                        "title", "detail", "estimated_hour", "actual_hour"
+                    ];
+                    for (var i = 0; i < targetAttributeArray.length; ++i) {
+                        var attribute = targetAttributeArray[i];
+                        $("#" + divId + "_" + attribute).text(issueJson[attribute]);
+                    }
                     $("#modal").modal('show');
                 }
             });
