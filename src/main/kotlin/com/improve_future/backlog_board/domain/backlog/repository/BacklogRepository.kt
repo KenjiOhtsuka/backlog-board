@@ -29,14 +29,36 @@ class BacklogRepository: AbstractBacklogRepository() {
                 backlogGateway.getProject(key))
     }
 
-    fun findAllIssues(projectKey: String): List<Issue> {
+    /**
+     * @param projectKey
+     * Return all un-closed issues
+     */
+    fun findAllUnclosedIssues(projectKey: String, milestoneId: Long?, categoryId: Long?): List<Issue> {
         val project = findProject(projectKey)
         val issueParam = GetIssueParam(listOf(project.id!!))
+        if (milestoneId != null) issueParam.milestoneIds(listOf(milestoneId))
+        if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
         issueParam.statuses(
                 listOf(
                         BacklogIssue.StatusType.Open,
                         BacklogIssue.StatusType.InProgress,
                         BacklogIssue.StatusType.Resolved))
+        issueParam.sort(GetIssuesParams.SortKey.DueDate)
+        issueParam.order(GetIssuesParams.Order.Asc)
+        issueParam.count(100)
+
+        return findAllIssueMap(issueParam).values.toList()
+    }
+
+    fun findAllIssues(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
+        val project = findProject(projectKey)
+        val issueParam = GetIssueParam(listOf(project.id!!))
+        issueParam.milestoneIds(listOf(milestoneId))
+        if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
+        issueParam.resolutions(listOf(
+                BacklogIssue.ResolutionType.NotSet,
+                BacklogIssue.ResolutionType.CannotReproduce,
+                BacklogIssue.ResolutionType.Fixed))
         issueParam.sort(GetIssuesParams.SortKey.DueDate)
         issueParam.order(GetIssuesParams.Order.Asc)
         issueParam.count(100)
