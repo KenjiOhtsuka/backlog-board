@@ -16,7 +16,7 @@ $(function() {
 
     $(".sortable").
         sortable({
-            connectWith: ".board_column_body.sortable",
+            connectWith: ".board_column_body.sortable,td",
             receive: function (event, ui) {
                 var newStatusId = $(this).data("status-id");
                 var newData = {

@@ -15,6 +15,7 @@ fun FlowContent.navigation(projectKey: String) {
                 }
             }
             item("/project/$projectKey/board", "Kanban Board")
+            item("/project/$projectKey/unclosed_board", "Unclosed Board")
             item("/project/$projectKey/issue_list", "Issues")
             item("/project/$projectKey/gantt", "Gantt Chart")
         }

@@ -30,9 +30,7 @@ class ProjectController {
                 attributes, projectList)
     }
 
-    @RequestMapping(
-            "{key}/board",
-            method = arrayOf(RequestMethod.GET))
+    @GetMapping("{key}/board")
     @ResponseBody
     fun board(
             @PathVariable("key") projectKey: String,
@@ -57,6 +55,29 @@ class ProjectController {
                 issueList.filter { it.childIssues.count() == 0 })
     }
 
+    @GetMapping("{key}/unclosed_board")
+    @ResponseBody
+    fun oldBoard(
+            @PathVariable("key") projectKey: String,
+            @RequestParam("milestone_id", required = false) milestoneId: Long? = null,
+            @RequestParam("category_id", required = false) categoryId: Long? = null,
+            attributes: RedirectAttributes): String {
+        val milestoneList = backlogService.findAllMilestone(projectKey)
+        val issueList = issueService.findAllUnclosedIssue(projectKey, milestoneId, categoryId)
+
+        val categoryList = backlogService.findAllCategory(projectKey)
+
+        return BacklogView.oldBoard(
+                attributes,
+                projectKey,
+                milestoneId,
+                milestoneList,
+                categoryId,
+                categoryList,
+                issueList.filter { it.childIssues.count() > 0 },
+                issueList.filter { it.childIssues.count() == 0 })
+    }
+
     @RequestMapping(
             "{key}/gantt",
             method = arrayOf(RequestMethod.GET))
@@ -68,17 +89,17 @@ class ProjectController {
         return ProjectView.gantt(redirectAttributes, projectKey, issueList)
     }
 
-//    @RequestMapping(
-//            "{key}/issue_list",
-//            method = arrayOf(RequestMethod.GET))
-//    @ResponseBody
-//    fun issueList(
-//            @PathVariable("key") projectKey: String,
-//            attributes: RedirectAttributes): String {
-//        val issueList = backlogService.findAllIssue(projectKey)
-//        return BacklogView.index(
-//                attributes, projectKey, issueList)
-//    }
+    @RequestMapping(
+            "{key}/issue_list",
+            method = arrayOf(RequestMethod.GET))
+    @ResponseBody
+    fun issueList(
+            @PathVariable("key") projectKey: String,
+            attributes: RedirectAttributes): String {
+        val issueList = issueService.findAllUnclosedIssue(projectKey)
+        return BacklogView.index(
+                attributes, projectKey, issueList)
+    }
 
     @RequestMapping(
             "{key}/icon",

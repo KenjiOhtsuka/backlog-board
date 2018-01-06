@@ -22,6 +22,10 @@ class IssueService {
         return backlogRepository.findAllIssues(projectKey, milestoneId, categoryId)
     }
 
+    fun findAllUnclosedIssue(projectKey: String, milestoneId: Long? = null, categoryId: Long? = null): List<Issue> {
+        return backlogRepository.findAllUnclosedIssues(projectKey, milestoneId, categoryId)
+    }
+
     fun findAllIssueForGanttChart(projectKey: String): List<Issue> {
         return backlogRepository.findAllIssuesInStartOrder(projectKey)
     }
