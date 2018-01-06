@@ -7,12 +7,17 @@
 .priority_low {
     background-color: MintCream;
 }
-.issue_tile { list-style-type: none;
+.issue_tile {
+    list-style-type: none;
     margin: 3px 3px 3px 0;
     padding: 2px;
     float: left;
     border: gray solid 1px;
     width: 100%;
+}
+
+.issue_tile:active {
+    /* transform: rotate(-15deg); */
 }
 
 .user_icon {

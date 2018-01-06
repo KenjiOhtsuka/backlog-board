@@ -3,6 +3,7 @@ package com.improve_future.backlog_board.presentation.backlog
 import com.improve_future.backlog_board.domain.backlog.model.*
 import com.improve_future.backlog_board.presentation.common.LayoutView
 import com.improve_future.backlog_board.presentation.core.col
+import com.improve_future.backlog_board.presentation.core.popUp
 import com.improve_future.backlog_board.presentation.core.row
 import com.improve_future.backlog_board.utility.DateUtility
 import kotlinx.html.*
@@ -151,14 +152,31 @@ object BacklogView {
             button { +"Search" }
         }
 
+        fun boardColumn(title: String, issueList: List<Issue>, statusType: BacklogIssue.StatusType, isFixed: Boolean = false) {
+            section("col board_column") {
+                h2 { +"To Do" }
+                div {
+                    span("estimated_hour") { }
+                    +"/"
+                    span("actual_hour") { }
+                }
+                var bodyClass = "board_column_body"
+                if (!isFixed) bodyClass += " sortable"
+                div(bodyClass) {
+                    attributes["data-status-id"] = statusType.intValue.toString()
+                    issuesOfThePhase(issueList, statusType)
+                }
+            }
+        }
+
         row {
             section("col board_column") {
                 h2 { +"Group" }
                 div {
                     +"Est. "
-                    span("estimated_hour") { 0 }
+                    span("estimated_hour") { }
                     +" / Act. "
-                    span("actual_hour") { 0 }
+                    span("actual_hour") { }
                 }
                 div("board_column_body") {
                     parentIssues.forEach {
@@ -169,66 +187,15 @@ object BacklogView {
                     }
                 }
             }
-            section("col board_column") {
-                h2 { +"To Do" }
-                div {
-                    span("estimated_hour") { 0 }
-                    +"/"
-                    span("actual_hour") { 0 }
-                }
-                div("sortable board_column_body") {
-                    attributes["data-status-id"] = BacklogIssue.StatusType.Open.intValue.toString()
-                    parentIssues.forEach {
-                        issuesOfThePhase(it.childIssues, BacklogIssue.StatusType.Open)
-                    }
-                    issuesOfThePhase(unitIssues, BacklogIssue.StatusType.Open)
-                }
-            }
-            section("col board_column") {
-                h2 { +"Doing" }
-                div {
-                    span("estimated_hour") { 0 }
-                    +"/"
-                    span("actual_hour") { 0 }
-                }
-                div("sortable board_column_body ui-sortable") {
-                    attributes["data-status-id"] = com.nulabinc.backlog4j.Issue.StatusType.InProgress.intValue.toString()
-                    parentIssues.forEach {
-                        issuesOfThePhase(it.childIssues, BacklogIssue.StatusType.InProgress)
-                    }
-                    issuesOfThePhase(unitIssues, BacklogIssue.StatusType.InProgress)
-                }
-            }
-            section("col board_column") {
-                h2 { +"Review" }
-                div {
-                    span("estimated_hour") { 0 }
-                    +"/"
-                    span("actual_hour") { 0 }
-                }
-                div("sortable board_column_body") {
-                    attributes["data-status-id"] = BacklogIssue.StatusType.Resolved.intValue.toString()
-                    parentIssues.forEach {
-                        issuesOfThePhase(it.childIssues, BacklogIssue.StatusType.Resolved)
-                    }
-                    issuesOfThePhase(unitIssues, BacklogIssue.StatusType.Resolved)
-                }
-            }
-            section("col board_column") {
-                h2 { +"Done" }
-                div {
-                    span("estimated_hour") { 0 }
-                    +"/"
-                    span("actual_hour") { 0 }
-                }
-                div("sortable board_column_body") {
-                    attributes["data-status-id"] = BacklogIssue.StatusType.Closed.intValue.toString()
-                    parentIssues.forEach {
-                        issuesOfThePhase(it.childIssues, BacklogIssue.StatusType.Closed)
-                    }
-                    issuesOfThePhase(unitIssues, BacklogIssue.StatusType.Closed)
-                }
-            }
+            val issueList = parentIssues + unitIssues
+            boardColumn("To Do", issueList, BacklogIssue.StatusType.Open)
+            boardColumn("In Progress", issueList, BacklogIssue.StatusType.InProgress)
+            boardColumn("Review", issueList, BacklogIssue.StatusType.Resolved)
+            boardColumn("Close", issueList, BacklogIssue.StatusType.Closed)
+        }
+
+        popUp() {
+            p { id = "modal_detail" }
         }
 
         script(src = "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js") {}

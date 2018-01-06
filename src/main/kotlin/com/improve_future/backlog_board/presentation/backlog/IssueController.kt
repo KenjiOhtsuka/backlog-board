@@ -19,5 +19,13 @@ class IssueController {
             @RequestParam(value="status_id") statusId: Long,
             attributes: RedirectAttributes): Map<String, Any> {
         backlogService.updateStatus(id, statusId)
-        return mapOf("data" to mapOf<String, Any>())   }
+        return mapOf("data" to mapOf<String, Any>())
+    }
+
+    @GetMapping("{id}")
+    @ResponseBody
+    fun showJson(
+        @PathVariable id: Long): Map<String, Any?> {
+        return IssueJsonView.show(backlogService.findIssue(id))
+    }
 }

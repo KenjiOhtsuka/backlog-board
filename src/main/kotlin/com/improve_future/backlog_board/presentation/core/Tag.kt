@@ -295,3 +295,40 @@ fun FlowContent.rubyWithBrace(
         rt { rubyText() }
         rp { +")"}
     }
+
+fun FlowContent.popUp(title: String = "", block: FlowContent.() -> Unit) {
+    val modalId = "modal"
+    div("modal fade") {
+        id = modalId
+        tabIndex = "-1"
+        role = "dialog"
+        div("modal-dialog") {
+            role = "document"
+            section("modal-content") {
+                div("modal-header") {
+                    h5("modal-title") {
+                        id = modalId + "_title"
+                        +title
+                    }
+                }
+                div("modal-body") {
+                    id = modalId + "_body"
+                    block()
+                }
+                footer("modal-footer") {
+                    button {
+                        attributes["data-dismiss"] = "modal"
+                        classes = setOf("btn btn-secondary")
+                        type = ButtonType.button
+                        +"Cancel"
+                    }
+                    button {
+                        classes = setOf("btn btn-primary")
+                        type = ButtonType.button
+                        +"Save"
+                    }
+                }
+            }
+        }
+    }
+}

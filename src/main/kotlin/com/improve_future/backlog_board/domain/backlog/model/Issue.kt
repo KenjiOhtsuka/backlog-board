@@ -20,6 +20,7 @@ class Issue: AbstractBacklog() {
         field = value
     }
     var title: String = ""
+    var detail: String? = null
     var assignee: User? = null
     var creator: User? = null
     var dueDate: Date? = null
@@ -27,6 +28,9 @@ class Issue: AbstractBacklog() {
     var status: Status? = null
     var estimatedHour: BigDecimal? = null
     var actualHour: BigDecimal? = null
+    var categoryList: List<Category> = listOf()
+    var milestoneList: List<Milestone> = listOf()
+
     var priorityId: Long? = null
     var priorityType: com.nulabinc.backlog4j.Issue.PriorityType?
     get() {

@@ -133,26 +133,4 @@ object LayoutView: RedirectAttributesHandler() {
                     script(src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js") {}
                 }
             }.toString()
-
-    fun popup(pageTitle: String = "", block: FlowContent.() -> Unit) =
-            StringWriter().
-                    appendln("<!DOCTYPE html>").
-                    appendHTML().html {
-                head {
-                    title {
-                        +pageTitle
-                    }
-                    metaTags()
-                    scriptTags()
-                    stylesheetTags()
-                }
-                body("mb10") {
-                    id = "main"
-                    div("container-fluid") {
-                        block()
-                    }
-                    script(src = "https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js") {}
-                    script(src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js") {}
-                }
-            }.toString()
 }

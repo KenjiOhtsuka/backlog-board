@@ -14,20 +14,35 @@ $(function() {
         });
     };
 
-    $(".sortable").sortable({
-        connectWith: ".board_column_body.sortable",
-        receive: function (event, ui) {
+    $(".sortable").
+        sortable({
+            connectWith: ".board_column_body.sortable",
+            receive: function (event, ui) {
+                jQuery.ajax({
+                    url: "/issue/" + $(ui.item[0]).data("id"),
+                    method: "post",
+                    data: {
+                        _method: "PATCH",
+                        status_id: $(this).data("status-id")
+                    }
+                });
+                updateHours();
+            }
+        });
+    $(".issue_tile").
+        click(function () {
             jQuery.ajax({
-                url: "/issue/" + $(ui.item[0]).data("id"),
-                method: "post",
-                data: {
-                    _method: "PATCH",
-                    status_id: $(this).data("status-id")
+                url: "/issue/" + $(this).data("id"),
+                method: "get",
+                success: function (dataJson) {
+                    var divId = "modal";
+                    var issueJson = dataJson.data["issue_list"][0];
+                    $("#" + divId + "_title").text(issueJson["title"]);
+                    $("#" + divId + "_detail").text(issueJson["detail"]);
+                    $("#modal").modal('show');
                 }
             });
-            updateHours();
-        }
-    });
+        });
     $(document).contextmenu("contextmenu", function (e) {
         e.preventDefault();
         alert("");

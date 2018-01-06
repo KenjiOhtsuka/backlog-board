@@ -34,6 +34,10 @@ class BacklogRepository: AbstractBacklogRepository() {
         val issueParam = GetIssueParam(listOf(project.id!!))
         issueParam.milestoneIds(listOf(milestoneId))
         if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
+        issueParam.resolutions(listOf(
+                BacklogIssue.ResolutionType.NotSet,
+                BacklogIssue.ResolutionType.CannotReproduce,
+                BacklogIssue.ResolutionType.Fixed))
         issueParam.sort(GetIssuesParams.SortKey.DueDate)
         issueParam.order(GetIssuesParams.Order.Asc)
         issueParam.count(100)

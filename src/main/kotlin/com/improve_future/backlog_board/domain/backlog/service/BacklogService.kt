@@ -6,6 +6,7 @@ import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.model.Milestone
 import com.improve_future.backlog_board.domain.backlog.model.Project
 import com.improve_future.backlog_board.domain.backlog.repository.CategoryRepository
+import com.improve_future.backlog_board.domain.backlog.repository.IssueRepository
 import com.improve_future.backlog_board.domain.backlog.repository.MilestoneRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -13,6 +14,9 @@ import java.time.YearMonth
 
 @Service
 class BacklogService {
+    @Autowired
+    lateinit private var issueRepository: IssueRepository
+
     @Autowired
     lateinit private var backlogRepository: BacklogRepository
 
@@ -52,5 +56,9 @@ class BacklogService {
 
     fun findAllCategory(projectKey: String): List<Category> {
         return categoryRepository.findAllCategory(projectKey)
+    }
+
+    fun findIssue(id: Long): Issue {
+        return issueRepository.findOne(id)
     }
 }
