@@ -29,7 +29,10 @@ plugins {
 
 apply {
     plugin("kotlin")
-    plugin("war")
+}
+
+springBoot {
+    isExecutable = true
 }
 
 

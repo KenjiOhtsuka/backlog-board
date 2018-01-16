@@ -12,6 +12,7 @@ import org.springframework.ui.ModelMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap
+import java.security.Principal
 
 @Controller
 @RequestMapping("project")
@@ -24,7 +25,7 @@ class ProjectController {
 
     @RequestMapping(method = arrayOf(RequestMethod.GET))
     @ResponseBody
-    fun index(attributes: RedirectAttributes): String {
+    fun index(attributes: RedirectAttributes, principal: Principal): String {
         val projectList = backlogService.findAllProject()
         return ProjectView.index(
                 attributes, projectList)

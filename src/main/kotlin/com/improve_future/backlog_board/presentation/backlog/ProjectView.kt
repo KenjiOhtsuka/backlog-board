@@ -8,6 +8,7 @@ import com.improve_future.backlog_board.utility.DateUtility
 import kotlinx.html.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap
+import java.security.Security
 import java.util.*
 
 object ProjectView {
@@ -32,6 +33,8 @@ object ProjectView {
                 }
             }
         }
+
+        +(com.improve_future.backlog_board.base.SecurityContextHolder.getCurrentUser()).name.orEmpty()
     }
 
     fun gantt(
