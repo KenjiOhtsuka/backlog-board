@@ -5,6 +5,7 @@ import com.improve_future.backlog_board.domain.backlog.factory.ProjectFactory
 import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.model.Project
 import com.improve_future.backlog_board.gateway.WebGateway
+import com.nulabinc.backlog4j.IssueType
 import com.nulabinc.backlog4j.CustomField as BacklogCustomField
 import com.nulabinc.backlog4j.Issue as BacklogIssue
 import com.nulabinc.backlog4j.Project as BacklogProject
@@ -52,9 +53,11 @@ class BacklogRepository: AbstractBacklogRepository() {
 
     fun findAllIssues(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
         val project = findProject(projectKey)
-        val issueParam = GetIssueParam(listOf(project.id!!))
+
+        var issueParam = GetIssueParam(listOf(project.id!!))
         issueParam.milestoneIds(listOf(milestoneId))
         if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
+        issueParam.parentChildType(GetIssuesParams.ParentChildType.Child)
         issueParam.resolutions(listOf(
                 BacklogIssue.ResolutionType.NotSet,
                 BacklogIssue.ResolutionType.CannotReproduce,
@@ -63,7 +66,23 @@ class BacklogRepository: AbstractBacklogRepository() {
         issueParam.order(GetIssuesParams.Order.Asc)
         issueParam.count(100)
 
-        return findAllIssueMap(issueParam).values.toList()
+        var issueList = findAllIssueList(issueParam)
+
+        issueParam = GetIssueParam(listOf(project.id!!))
+        issueParam.milestoneIds(listOf(milestoneId))
+        if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
+        issueParam.parentChildType(GetIssuesParams.ParentChildType.NotChildNotParent)
+        issueParam.resolutions(listOf(
+                BacklogIssue.ResolutionType.NotSet,
+                BacklogIssue.ResolutionType.CannotReproduce,
+                BacklogIssue.ResolutionType.Fixed))
+        issueParam.sort(GetIssuesParams.SortKey.DueDate)
+        issueParam.order(GetIssuesParams.Order.Asc)
+        issueParam.count(100)
+
+        issueList += findAllIssueList(issueParam)
+
+        return issueList
     }
 
     fun findAllIssuesInStartOrder(projectKey: String): List<Issue> {
@@ -116,14 +135,8 @@ class BacklogRepository: AbstractBacklogRepository() {
     }
 
     private fun findAllIssueMap(condition: GetIssueParam): Map<Long, Issue> {
-        val issueList = mutableListOf<Issue>()
+        val issueList = findAllIssueList(condition)
         val parentIssuesMap = mutableMapOf<Long, Issue>()
-        do {
-            val param = condition.clone()
-            param.offset(issueList.count().toLong())
-            val issueChunks = this.findIssues(param)
-            issueList += issueChunks
-        } while (issueChunks.count() > 0)
         issueList.forEach {
             if (!it.isChild())
                 parentIssuesMap.put(it.id!!, it)
@@ -134,6 +147,17 @@ class BacklogRepository: AbstractBacklogRepository() {
                         parentIssuesMap.put(it.id!!, it)
         }
         return parentIssuesMap
+    }
+
+    private fun findAllIssueList(condition: GetIssueParam): List<Issue> {
+        val issueList = mutableListOf<Issue>()
+        do {
+            val param = condition.clone()
+            param.offset(issueList.count().toLong())
+            val issueChunks = this.findIssues(param)
+            issueList += issueChunks
+        } while (issueChunks.count() > 0)
+        return issueList
     }
 
     private fun buildClosedIssueCondition(projectId: Long):

@@ -1,13 +1,10 @@
 package com.improve_future.backlog_board.presentation.common
 
-import com.fasterxml.jackson.databind.deser.std.StringArrayDeserializer
-import com.improve_future.backlog_board.presentation.core.MessageMap
 import com.improve_future.backlog_board.presentation.core.ModelMap
 import com.improve_future.backlog_board.presentation.core.RedirectAttributesHandler
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import org.springframework.ui.Model
-import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.io.StringWriter
 
 object LayoutView: RedirectAttributesHandler() {
@@ -58,7 +55,7 @@ object LayoutView: RedirectAttributesHandler() {
     }()
 
     fun HEAD.stylesheetTags(): Unit = {
-        styleLink("/css/base.css")
+        styleLink(staticFile("css/base.css"))
         styleLink("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css")
     }()
 

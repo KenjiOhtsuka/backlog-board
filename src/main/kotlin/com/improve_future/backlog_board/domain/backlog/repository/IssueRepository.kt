@@ -17,8 +17,8 @@ object IssueRepository: AbstractBacklogRepository() {
         val param = UpdateIssueParams(issueParam["id"] as Long)
         if (issueParam.containsKey("status_id"))
             param.status(BacklogIssue.StatusType.valueOf(issueParam["status_id"] as Int))
-        if (issueParam.containsKey(""))
-            param.actualHours(issueParam["actual_hour"] as Float)
+        if (issueParam.containsKey("actual_hour"))
+            param.actualHours((issueParam["actual_hour"] as Number).toFloat())
         return IssueFactory.createFromBacklogIssue(
                 backlogConfig.spaceId,
                 backlogGateway.updateIssue(param))

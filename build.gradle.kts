@@ -24,12 +24,15 @@ buildscript {
 }
 
 plugins {
-    id("org.springframework.boot") version "1.5.8.RELEASE"
+    id("org.springframework.boot") version "1.5.9.RELEASE"
 }
 
 apply {
     plugin("kotlin")
-    plugin("war")
+}
+
+springBoot {
+    isExecutable = true
 }
 
 

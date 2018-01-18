@@ -2,6 +2,7 @@ package com.improve_future.backlog_board.domain.backlog.model
 
 import com.improve_future.backlog_board.domain.backlog.master.IssuePriority
 import com.improve_future.backlog_board.domain.backlog.master.IssuePriorityMaster
+import com.nulabinc.backlog4j.IssueType
 import com.nulabinc.backlog4j.Status
 import java.math.BigDecimal
 import com.nulabinc.backlog4j.CustomField as BacklogCustomField
@@ -30,6 +31,7 @@ class Issue: AbstractBacklog() {
     var actualHour: BigDecimal? = null
     var categoryList: List<Category> = listOf()
     var milestoneList: List<Milestone> = listOf()
+    var type: IssueType? = null
 
     var priorityId: Long? = null
     var priorityType: com.nulabinc.backlog4j.Issue.PriorityType?

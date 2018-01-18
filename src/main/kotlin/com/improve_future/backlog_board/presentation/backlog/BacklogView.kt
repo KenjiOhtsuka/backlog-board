@@ -2,6 +2,7 @@ package com.improve_future.backlog_board.presentation.backlog
 
 import com.improve_future.backlog_board.domain.backlog.model.*
 import com.improve_future.backlog_board.presentation.common.LayoutView
+import com.improve_future.backlog_board.presentation.common.staticFile
 import com.improve_future.backlog_board.presentation.core.col
 import com.improve_future.backlog_board.presentation.core.popUp
 import com.improve_future.backlog_board.presentation.core.row
@@ -28,7 +29,7 @@ object BacklogView {
             issues: List<Issue>) =
             LayoutView.default(
                     redirectAttributes,
-                    styleLinkArray = arrayOf("/backlog/css/issue.css")) {
+                    styleLinkArray = arrayOf("/static/backlog/css/issue.css")) {
                 navigation(projectKey)
                 table {
                     thead {
@@ -93,7 +94,7 @@ object BacklogView {
             categoryList: List<Category>,
             parentIssues: List<Issue>, unitIssues: List<Issue>) = LayoutView.default(redirectAttributes, "Kanban Board",
             arrayOf(
-                    "/backlog/css/issue.css",
+                    "/static/backlog/css/issue.css",
                     "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")) {
 
         navigation(projectKey)
@@ -209,7 +210,7 @@ object BacklogView {
         }
 
         script(src = "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js") {}
-        script(src = "/backlog/js/issue.js", type = ScriptType.textJavaScript) {
+        script(src = staticFile("backlog/js/issue.js"), type = ScriptType.textJavaScript) {
             attributes["charset"] = "UTF-8"
         }
     }
@@ -223,7 +224,7 @@ object BacklogView {
             categoryList: List<Category>,
             parentIssues: List<Issue>, unitIssues: List<Issue>) = LayoutView.default(redirectAttributes, "Kanban Board",
             arrayOf(
-                    "/backlog/css/issue.css",
+                    "/static/backlog/css/issue.css",
                     "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")) {
 
         navigation(projectKey)
@@ -347,7 +348,7 @@ object BacklogView {
             }
 
             script(src = "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js") {}
-            script(src = "/backlog/js/issue.js", type = ScriptType.textJavaScript) {
+            script(src = staticFile("backlog/js/issue.js"), type = ScriptType.textJavaScript) {
                 attributes["charset"] = "UTF-8"
             }
         }
