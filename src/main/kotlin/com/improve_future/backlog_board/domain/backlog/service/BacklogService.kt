@@ -24,12 +24,15 @@ class BacklogService {
         return backlogRepository.findAllProjects(spaceKey, apiKey)
     }
 
-    fun retrieveUserIcon(userId: Long): ByteArray {
-        return backlogRepository.retrieveUserIcon(userId)
+    fun retrieveUserIcon(
+            spaceKey: String, apiKey: String, userId: Long): ByteArray {
+        return backlogRepository.retrieveUserIcon(spaceKey, apiKey, userId)
     }
 
-    fun retrieveProjectIcon(projectKey: String): ByteArray {
-        return backlogRepository.retrieveProjectIcon(projectKey)
+    fun retrieveProjectIcon(
+            spaceKey: String, apiKey: String, projectKey: String): ByteArray {
+        return backlogRepository.retrieveProjectIcon(
+                spaceKey, apiKey, projectKey)
     }
 
     fun findAllMilestone(

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap
 import java.security.Principal
+import java.security.Security
 
 @Controller
 @RequestMapping("project")
@@ -120,8 +121,9 @@ class ProjectController {
     fun projectIcon(
             @PathVariable key: String,
             attributes: RedirectAttributes): HttpEntity<ByteArray> {
-
-        val imageByteArray = backlogService.retrieveProjectIcon(key) //.toTypedArray()
+        val user = SecurityContextHolder.getCurrentUser()
+        val imageByteArray = backlogService.retrieveProjectIcon(
+                user.spaceKey!!, user.apiKey!!, key) //.toTypedArray()
         val header = HttpHeaders()
         header.contentType = MediaType.IMAGE_GIF
         header.contentLength = imageByteArray.size.toLong()

@@ -109,30 +109,31 @@ class BacklogRepository: AbstractBacklogRepository() {
         backlogGateway.updateIssue(params)
     }
 
-    fun retrieveUserIcon(userId: Long): ByteArray {
+    fun retrieveUserIcon(
+            spaceKey: String, apiKey: String, userId: Long): ByteArray {
         return WebGateway.getImage(
-                buildUserIconUrl(userId),
+                buildUserIconUrl(spaceKey, apiKey, userId),
                 mapOf(
                         "apiKey" to backlogConfig.apiKey
                 ))
     }
 
-    fun retrieveProjectIcon(projectKey: String): ByteArray {
+    fun retrieveProjectIcon(
+            spaceKey: String, apiKey: String, projectKey: String): ByteArray {
         return WebGateway.getImage(
-                buildProjectIconUrl(projectKey),
-                mapOf(
-                        "apiKey" to backlogConfig.apiKey
-                )
+                buildProjectIconUrl(spaceKey, apiKey, projectKey),
+                mapOf("apiKey" to apiKey)
         )
     }
 
-    private fun buildUserIconUrl(userId: Long): URL {
-        return URL(
-                    "https://${backlogConfig.spaceId}.backlog.jp/api/v2/users/$userId/icon?apiKey=${backlogConfig.apiKey}")
+    private fun buildUserIconUrl(
+            spaceKey: String, apiKey: String, userId: Long): URL {
+        return URL("https://$spaceKey.backlog.jp/api/v2/users/$userId/icon?apiKey=$apiKey")
     }
 
-    private fun buildProjectIconUrl(projectKey: String): URL {
-        return URL( "https://${backlogConfig.spaceId}.backlog.jp/api/v2/projects/$projectKey/image?apiKey=${backlogConfig.apiKey}")
+    private fun buildProjectIconUrl(
+            spaceKey: String, apiKey: String, projectKey: String): URL {
+        return URL( "https://$spaceKey.backlog.jp/api/v2/projects/$projectKey/image?apiKey=$apiKey")
     }
 
     private fun findAllIssueMap(condition: GetIssueParam): Map<Long, Issue> {
