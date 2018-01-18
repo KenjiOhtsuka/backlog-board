@@ -20,23 +20,29 @@ class BacklogService {
     @Autowired
     lateinit private var categoryRepository: CategoryRepository
 
-    fun findAllProject(): List<Project> {
-        return backlogRepository.findAllProjects()
+    fun findAllProject(spaceKey: String, apiKey: String): List<Project> {
+        return backlogRepository.findAllProjects(spaceKey, apiKey)
     }
 
-    fun retrieveUserIcon(userId: Long): ByteArray {
-        return backlogRepository.retrieveUserIcon(userId)
+    fun retrieveUserIcon(
+            spaceKey: String, apiKey: String, userId: Long): ByteArray {
+        return backlogRepository.retrieveUserIcon(spaceKey, apiKey, userId)
     }
 
-    fun retrieveProjectIcon(projectKey: String): ByteArray {
-        return backlogRepository.retrieveProjectIcon(projectKey)
+    fun retrieveProjectIcon(
+            spaceKey: String, apiKey: String, projectKey: String): ByteArray {
+        return backlogRepository.retrieveProjectIcon(
+                spaceKey, apiKey, projectKey)
     }
 
-    fun findAllMilestone(projectKey: String): List<Milestone> {
-        return milestoneRepository.findAll(projectKey)
+    fun findAllMilestone(
+            spaceKey: String, apiKey: String, projectKey: String): List<Milestone> {
+        return milestoneRepository.findAll(
+                spaceKey, apiKey, projectKey)
     }
 
-    fun findAllCategory(projectKey: String): List<Category> {
-        return categoryRepository.findAllCategory(projectKey)
+    fun findAllCategory(spaceKey: String, apiKey: String, projectKey: String): List<Category> {
+        return categoryRepository.findAllCategory(
+                spaceKey, apiKey, projectKey)
     }
 }

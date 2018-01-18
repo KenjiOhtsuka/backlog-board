@@ -18,15 +18,17 @@ import java.net.URL
 
 @Component
 class BacklogRepository: AbstractBacklogRepository() {
-    fun findAllProjects(): List<Project> {
+    fun findAllProjects(spaceKey: String, apiKey: String): List<Project> {
+        val backlogGateway = buildBacklogClient(spaceKey, apiKey)
         return backlogGateway.projects.map {
             ProjectFactory.createFromBacklogProject(
-                    backlogConfig.spaceId, it) }
+                    spaceKey, it) }
     }
 
-    fun findProject(key: String): Project {
+    fun findProject(spaceKey: String, apiKey: String, key: String): Project {
+        val backlogGateway = buildBacklogClient(spaceKey, apiKey)
         return ProjectFactory.createFromBacklogProject(
-                backlogConfig.spaceId,
+                spaceKey,
                 backlogGateway.getProject(key))
     }
 
@@ -34,8 +36,10 @@ class BacklogRepository: AbstractBacklogRepository() {
      * @param projectKey
      * Return all un-closed issues
      */
-    fun findAllUnclosedIssues(projectKey: String, milestoneId: Long?, categoryId: Long?): List<Issue> {
-        val project = findProject(projectKey)
+    fun findAllUnclosedIssues(
+            spaceKey: String, apiKey: String,
+            projectKey: String, milestoneId: Long?, categoryId: Long?): List<Issue> {
+        val project = findProject(spaceKey, apiKey, projectKey)
         val issueParam = GetIssueParam(listOf(project.id!!))
         if (milestoneId != null) issueParam.milestoneIds(listOf(milestoneId))
         if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
@@ -48,11 +52,14 @@ class BacklogRepository: AbstractBacklogRepository() {
         issueParam.order(GetIssuesParams.Order.Asc)
         issueParam.count(100)
 
-        return findAllIssueMap(issueParam).values.toList()
+        return findAllIssueMap(
+                spaceKey, apiKey, issueParam).values.toList()
     }
 
-    fun findAllIssues(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
-        val project = findProject(projectKey)
+    fun findAllIssues(
+            spaceKey: String, apiKey: String,
+            projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
+        val project = findProject(spaceKey, apiKey, projectKey)
 
         var issueParam = GetIssueParam(listOf(project.id!!))
         issueParam.milestoneIds(listOf(milestoneId))
@@ -66,7 +73,8 @@ class BacklogRepository: AbstractBacklogRepository() {
         issueParam.order(GetIssuesParams.Order.Asc)
         issueParam.count(100)
 
-        var issueList = findAllIssueList(issueParam)
+        var issueList = findAllIssueList(
+                spaceKey, apiKey, issueParam)
 
         issueParam = GetIssueParam(listOf(project.id!!))
         issueParam.milestoneIds(listOf(milestoneId))
@@ -80,13 +88,14 @@ class BacklogRepository: AbstractBacklogRepository() {
         issueParam.order(GetIssuesParams.Order.Asc)
         issueParam.count(100)
 
-        issueList += findAllIssueList(issueParam)
+        issueList += findAllIssueList(
+                spaceKey, apiKey, issueParam)
 
         return issueList
     }
 
-    fun findAllIssuesInStartOrder(projectKey: String): List<Issue> {
-        val project = findProject(projectKey)
+    fun findAllIssuesInStartOrder(spaceKey: String, apiKey: String, projectKey: String): List<Issue> {
+        val project = findProject(spaceKey, apiKey, projectKey)
         val issueParam = GetIssueParam(listOf(project.id!!))
         issueParam.statuses(
                 listOf(
@@ -99,43 +108,41 @@ class BacklogRepository: AbstractBacklogRepository() {
         issueParam.order(GetIssuesParams.Order.Asc)
         issueParam.count(100)
 
-        return findAllIssueMap(issueParam).values.toList()
+        return findAllIssueMap(
+                spaceKey, apiKey, issueParam).values.toList()
     }
 
-    fun updateStatus(id: Long, statusId: Long) {
-        var params = UpdateIssueParams(id.toString())
-        params.status(com.nulabinc.backlog4j.Issue.StatusType.valueOf(statusId.toInt()))
-        backlogGateway.updateIssue(params)
-    }
-
-    fun retrieveUserIcon(userId: Long): ByteArray {
+    fun retrieveUserIcon(
+            spaceKey: String, apiKey: String, userId: Long): ByteArray {
         return WebGateway.getImage(
-                buildUserIconUrl(userId),
+                buildUserIconUrl(spaceKey, apiKey, userId),
                 mapOf(
-                        "apiKey" to backlogConfig.apiKey
+                        "apiKey" to apiKey
                 ))
     }
 
-    fun retrieveProjectIcon(projectKey: String): ByteArray {
+    fun retrieveProjectIcon(
+            spaceKey: String, apiKey: String, projectKey: String): ByteArray {
         return WebGateway.getImage(
-                buildProjectIconUrl(projectKey),
-                mapOf(
-                        "apiKey" to backlogConfig.apiKey
-                )
+                buildProjectIconUrl(spaceKey, apiKey, projectKey),
+                mapOf("apiKey" to apiKey)
         )
     }
 
-    private fun buildUserIconUrl(userId: Long): URL {
-        return URL(
-                    "https://${backlogConfig.spaceId}.backlog.jp/api/v2/users/$userId/icon?apiKey=${backlogConfig.apiKey}")
+    private fun buildUserIconUrl(
+            spaceKey: String, apiKey: String, userId: Long): URL {
+        return URL("https://$spaceKey.backlog.jp/api/v2/users/$userId/icon?apiKey=$apiKey")
     }
 
-    private fun buildProjectIconUrl(projectKey: String): URL {
-        return URL( "https://${backlogConfig.spaceId}.backlog.jp/api/v2/projects/$projectKey/image?apiKey=${backlogConfig.apiKey}")
+    private fun buildProjectIconUrl(
+            spaceKey: String, apiKey: String, projectKey: String): URL {
+        return URL( "https://$spaceKey.backlog.jp/api/v2/projects/$projectKey/image?apiKey=$apiKey")
     }
 
-    private fun findAllIssueMap(condition: GetIssueParam): Map<Long, Issue> {
-        val issueList = findAllIssueList(condition)
+    private fun findAllIssueMap(
+            spaceKey: String, apiKey: String, condition: GetIssueParam): Map<Long, Issue> {
+        val issueList = findAllIssueList(
+                spaceKey, apiKey, condition)
         val parentIssuesMap = mutableMapOf<Long, Issue>()
         issueList.forEach {
             if (!it.isChild())
@@ -149,12 +156,14 @@ class BacklogRepository: AbstractBacklogRepository() {
         return parentIssuesMap
     }
 
-    private fun findAllIssueList(condition: GetIssueParam): List<Issue> {
+    private fun findAllIssueList(
+            spaceKey: String, apiKey: String, condition: GetIssueParam): List<Issue> {
         val issueList = mutableListOf<Issue>()
         do {
             val param = condition.clone()
             param.offset(issueList.count().toLong())
-            val issueChunks = this.findIssues(param)
+            val issueChunks = this.findIssues(
+                    spaceKey, apiKey, param)
             issueList += issueChunks
         } while (issueChunks.count() > 0)
         return issueList
@@ -184,13 +193,10 @@ class BacklogRepository: AbstractBacklogRepository() {
     /**
      * Find and return Issue List
      */
-    private fun findIssues(condition: GetIssueParam): List<Issue> {
+    private fun findIssues(
+            spaceKey: String, apiKey: String, condition: GetIssueParam): List<Issue> {
+        val backlogGateway = buildBacklogClient(spaceKey, apiKey)
         return backlogGateway.getIssues(condition).
-                map { IssueFactory.createFromBacklogIssue(backlogConfig.spaceId, it) }
-    }
-
-    private fun createIssueFromBacklogIssue(backlogIssue: BacklogIssue): Issue {
-        return IssueFactory.createFromBacklogIssue(
-                backlogConfig.spaceId, backlogIssue)
+                map { IssueFactory.createFromBacklogIssue(spaceKey, it) }
     }
 }

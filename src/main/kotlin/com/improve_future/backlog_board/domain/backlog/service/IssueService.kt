@@ -15,28 +15,33 @@ class IssueService {
     @Autowired
     lateinit private var backlogRepository: BacklogRepository
 
-    fun findIssue(id: Long): Issue {
-        return issueRepository.findOne(id)
+    fun findIssue(spaceKey: String, apiKey: String, id: Long): Issue {
+        return issueRepository.findOne(spaceKey, apiKey, id)
     }
 
-    fun findAllNonParentIssue(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
-        return backlogRepository.findAllIssues(projectKey, milestoneId, categoryId)
+    fun findAllNonParentIssue(
+            spaceKey: String, apiKey: String, projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
+        return backlogRepository.findAllIssues(
+                spaceKey, apiKey, projectKey, milestoneId, categoryId)
     }
 
-    fun findAllUnclosedIssue(projectKey: String, milestoneId: Long? = null, categoryId: Long? = null): List<Issue> {
-        return backlogRepository.findAllUnclosedIssues(projectKey, milestoneId, categoryId)
+    fun findAllUnclosedIssue(
+            spaceKey: String, apiKey: String, projectKey: String, milestoneId: Long? = null, categoryId: Long? = null): List<Issue> {
+        return backlogRepository.findAllUnclosedIssues(
+                spaceKey, apiKey, projectKey, milestoneId, categoryId)
     }
 
-    fun findAllIssueForGanttChart(projectKey: String): List<Issue> {
-        return backlogRepository.findAllIssuesInStartOrder(projectKey)
+    fun findAllIssueForGanttChart(
+            spaceKey: String, apiKey: String, projectKey: String): List<Issue> {
+        return backlogRepository.findAllIssuesInStartOrder(
+                spaceKey, apiKey, projectKey)
     }
 
-    fun updateStatus(id: Long, statusId: Long) {
-        backlogRepository.updateStatus(id, statusId)
-    }
-
-    fun update(id: Long, valueMap: MutableMap<String, Any?>): Issue {
+    fun update(
+            spaceKey: String, apiKey: String,
+            id: Long, valueMap: MutableMap<String, Any?>): Issue {
         valueMap["id"] = id
-        return issueRepository.update(valueMap)
+        return issueRepository.update(
+                spaceKey, apiKey, valueMap)
     }
 }
