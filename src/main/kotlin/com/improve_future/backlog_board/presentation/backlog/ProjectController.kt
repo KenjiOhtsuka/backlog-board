@@ -1,5 +1,6 @@
 package com.improve_future.backlog_board.presentation.backlog
 
+import com.improve_future.backlog_board.base.SecurityContextHolder
 import com.improve_future.backlog_board.domain.backlog.service.BacklogService
 import com.improve_future.backlog_board.domain.backlog.service.IssueService
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +28,9 @@ class ProjectController {
     @RequestMapping(method = arrayOf(RequestMethod.GET))
     @ResponseBody
     fun index(attributes: RedirectAttributes, principal: Principal): String {
-        val projectList = backlogService.findAllProject()
+        val user = SecurityContextHolder.getCurrentUser()
+        val projectList = backlogService.findAllProject(
+                user.spaceKey!!, user.apiKey!!)
         return ProjectView.index(
                 attributes, projectList)
     }

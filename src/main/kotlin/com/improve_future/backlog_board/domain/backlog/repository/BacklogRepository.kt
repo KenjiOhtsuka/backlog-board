@@ -18,10 +18,11 @@ import java.net.URL
 
 @Component
 class BacklogRepository: AbstractBacklogRepository() {
-    fun findAllProjects(): List<Project> {
+    fun findAllProjects(spaceKey: String, apiKey: String): List<Project> {
+        val backlogGateway = buildBacklogClient(spaceKey, apiKey)
         return backlogGateway.projects.map {
             ProjectFactory.createFromBacklogProject(
-                    backlogConfig.spaceId, it) }
+                    spaceKey, it) }
     }
 
     fun findProject(key: String): Project {

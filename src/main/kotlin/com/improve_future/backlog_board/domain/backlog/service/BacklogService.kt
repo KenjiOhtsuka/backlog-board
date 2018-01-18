@@ -20,8 +20,8 @@ class BacklogService {
     @Autowired
     lateinit private var categoryRepository: CategoryRepository
 
-    fun findAllProject(): List<Project> {
-        return backlogRepository.findAllProjects()
+    fun findAllProject(spaceKey: String, apiKey: String): List<Project> {
+        return backlogRepository.findAllProjects(spaceKey, apiKey)
     }
 
     fun retrieveUserIcon(userId: Long): ByteArray {
