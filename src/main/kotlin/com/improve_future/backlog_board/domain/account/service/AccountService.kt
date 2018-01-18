@@ -27,6 +27,7 @@ class AccountService:
     fun authenticate(spaceId: String, apiKey: String): User {
         return UserFactory.createFromBacklogUser(
                 spaceId,
-                buildClient(spaceId, apiKey).myself)
+                buildClient(spaceId, apiKey).myself,
+                apiKey)
     }
 }

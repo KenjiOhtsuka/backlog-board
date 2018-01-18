@@ -102,14 +102,15 @@ open class CredentialConfig : WebSecurityConfigurerAdapter() {
         override fun authenticate(
                 authentication: Authentication?): Authentication {
             val loginCodeAndPassword = authentication as UsernamePasswordAuthenticationToken
+            val password = loginCodeAndPassword.credentials.toString()
             val user = accountService.authenticate(
                     loginCodeAndPassword.principal.toString(),
-                    loginCodeAndPassword.credentials.toString())
+                    password)
 
             user ?: throw Exception("Invalid User.")
 
             return UsernamePasswordAuthenticationToken(
-                    user, null, user.authorities)
+                    user, password, user.authorities)
         }
     }
 }

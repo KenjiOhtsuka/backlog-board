@@ -25,7 +25,7 @@ $(function() {
                 if (newStatusId == 4) {
                     var actualHour = prompt("実績工数を入力してください。 Please input actual hours. (h)");
                     if (actualHour != null && actualHour.match(/^[0-9]+(\.[0-9]+)?/) != null)
-                        newData["actual_hour"] = actualHour
+                        newData["actual_hour"] = parseFloat(actualHour);
                     else {
                         $(".sortable").sortable("cancel");
                         return;

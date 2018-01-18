@@ -1,6 +1,5 @@
 package com.improve_future.backlog_board.presentation.backlog
 
-import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.service.BacklogService
 import com.improve_future.backlog_board.domain.backlog.service.IssueService
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +7,6 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
-import org.springframework.ui.ModelMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap
@@ -22,6 +20,9 @@ class ProjectController {
 
     @Autowired
     lateinit private var issueService: IssueService
+
+    @Autowired
+    lateinit private var categoryService: BacklogService
 
     @RequestMapping(method = arrayOf(RequestMethod.GET))
     @ResponseBody
@@ -40,7 +41,7 @@ class ProjectController {
             attributes: RedirectAttributes): String {
         val milestoneList = backlogService.findAllMilestone(projectKey)
         val issueList =
-            if (milestoneId != null) issueService.findAllIssue(projectKey, milestoneId, categoryId)
+            if (milestoneId != null) issueService.findAllNonParentIssue(projectKey, milestoneId, categoryId)
             else emptyList()
 
         val categoryList = backlogService.findAllCategory(projectKey)
@@ -85,7 +86,9 @@ class ProjectController {
     @ResponseBody
     fun gantt(
             @PathVariable("key") projectKey: String,
+            @RequestParam("category_id") categoryId: Long,
             redirectAttributes: RedirectAttributesModelMap): String {
+        val categoryList = categoryService.findAllCategory(projectKey)
         val issueList = issueService.findAllIssueForGanttChart(projectKey)
         return ProjectView.gantt(redirectAttributes, projectKey, issueList)
     }

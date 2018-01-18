@@ -3,6 +3,7 @@ package com.improve_future.backlog_board.domain.backlog.service
 import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.repository.BacklogRepository
 import com.improve_future.backlog_board.domain.backlog.repository.IssueRepository
+import com.nulabinc.backlog4j.IssueType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -18,7 +19,7 @@ class IssueService {
         return issueRepository.findOne(id)
     }
 
-    fun findAllIssue(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
+    fun findAllNonParentIssue(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
         return backlogRepository.findAllIssues(projectKey, milestoneId, categoryId)
     }
 

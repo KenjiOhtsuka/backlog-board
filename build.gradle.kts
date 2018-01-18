@@ -24,7 +24,7 @@ buildscript {
 }
 
 plugins {
-    id("org.springframework.boot") version "1.5.8.RELEASE"
+    id("org.springframework.boot") version "1.5.9.RELEASE"
 }
 
 apply {
@@ -67,7 +67,7 @@ tasks.withType(org.gradle.language.jvm.tasks.ProcessResources::class.java) {
     this.filter(
             mapOf(
                     "tokens" to mapOf(
-                            "activeProfile" to (project.properties["activeProfile"] ?: "default")
+                            "profile" to (project.properties["profile"] ?: "default")
                     )
             ),
             org.apache.tools.ant.filters.ReplaceTokens::class.java

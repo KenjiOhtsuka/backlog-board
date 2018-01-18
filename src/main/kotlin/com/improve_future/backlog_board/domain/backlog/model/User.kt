@@ -25,6 +25,7 @@ class User: AbstractBacklog(), UserDetails {
     var name: String? = null
     var emailAddress: String? = null
     var role: BacklogUser.RoleType? = null
+    var apiKey: String? = null
 
     var userId: String = ""
     val urlString: String by lazy {

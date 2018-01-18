@@ -35,7 +35,7 @@ object IssueFactory {
         issue.milestoneList = backlogIssue.milestone.map {
             MilestoneFactory.createFromBacklogMilestone(spaceKey, it)
         }
-        backlogIssue.category
+        issue.type = backlogIssue.issueType
 
         return issue
     }

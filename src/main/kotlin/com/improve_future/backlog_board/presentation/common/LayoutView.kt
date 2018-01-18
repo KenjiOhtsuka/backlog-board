@@ -55,7 +55,7 @@ object LayoutView: RedirectAttributesHandler() {
     }()
 
     fun HEAD.stylesheetTags(): Unit = {
-        styleLink(staticFile("/css/base.css"))
+        styleLink(staticFile("css/base.css"))
         styleLink("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css")
     }()
 

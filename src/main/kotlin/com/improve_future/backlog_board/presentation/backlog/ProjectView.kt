@@ -3,6 +3,7 @@ package com.improve_future.backlog_board.presentation.backlog
 import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.model.Project
 import com.improve_future.backlog_board.presentation.common.LayoutView
+import com.improve_future.backlog_board.presentation.common.staticFile
 import com.improve_future.backlog_board.presentation.core.row
 import com.improve_future.backlog_board.utility.DateUtility
 import kotlinx.html.*
@@ -16,7 +17,7 @@ object ProjectView {
             redirectAttributes: RedirectAttributes,
             projectList: List<Project>) = LayoutView.default(
             redirectAttributes,
-            styleLinkArray = arrayOf("/backlog/css/issue.css")) {
+            styleLinkArray = arrayOf("/static/backlog/css/issue.css")) {
         projectList.forEach {
             row {
                 div("col-sm-1") {
@@ -33,8 +34,6 @@ object ProjectView {
                 }
             }
         }
-
-        +(com.improve_future.backlog_board.base.SecurityContextHolder.getCurrentUser()).name.orEmpty()
     }
 
     fun gantt(
@@ -44,7 +43,7 @@ object ProjectView {
             LayoutView.default(
                     modelMap,
                     styleLinkArray = arrayOf(
-                            "/backlog/css/issue.css",
+                            "/static/backlog/css/issue.css",
                             "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")) {
                 navigation(projectKey
                 )
@@ -148,6 +147,6 @@ object ProjectView {
                     }
                 }
                 script(src = "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js") {}
-                script(src = "/backlog/js/gantt.js") { }
+                script(src = staticFile("backlog/js/gantt.js")) { }
             }
 }
