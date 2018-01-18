@@ -25,7 +25,7 @@ class ProjectController {
     @Autowired
     lateinit private var categoryService: BacklogService
 
-    @RequestMapping(method = arrayOf(RequestMethod.GET))
+    @GetMapping
     @ResponseBody
     fun index(attributes: RedirectAttributes, principal: Principal): String {
         val user = SecurityContextHolder.getCurrentUser()
@@ -42,7 +42,10 @@ class ProjectController {
             @RequestParam("milestone_id", required = false) milestoneId: Long? = null,
             @RequestParam("category_id", required = false) categoryId: Long? = null,
             attributes: RedirectAttributes): String {
-        val milestoneList = backlogService.findAllMilestone(projectKey)
+        val user = SecurityContextHolder.getCurrentUser()
+
+        val milestoneList = backlogService.findAllMilestone(
+                user.spaceKey!!, user.apiKey!!, projectKey)
         val issueList =
             if (milestoneId != null) issueService.findAllNonParentIssue(projectKey, milestoneId, categoryId)
             else emptyList()
@@ -67,7 +70,10 @@ class ProjectController {
             @RequestParam("milestone_id", required = false) milestoneId: Long? = null,
             @RequestParam("category_id", required = false) categoryId: Long? = null,
             attributes: RedirectAttributes): String {
-        val milestoneList = backlogService.findAllMilestone(projectKey)
+        val user = SecurityContextHolder.getCurrentUser()
+
+        val milestoneList = backlogService.findAllMilestone(
+                user.spaceKey!!, user.apiKey!!, projectKey)
         val issueList = issueService.findAllUnclosedIssue(projectKey, milestoneId, categoryId)
 
         val categoryList = backlogService.findAllCategory(projectKey)

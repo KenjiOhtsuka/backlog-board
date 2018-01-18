@@ -32,8 +32,10 @@ class BacklogService {
         return backlogRepository.retrieveProjectIcon(projectKey)
     }
 
-    fun findAllMilestone(projectKey: String): List<Milestone> {
-        return milestoneRepository.findAll(projectKey)
+    fun findAllMilestone(
+            spaceKey: String, apiKey: String, projectKey: String): List<Milestone> {
+        return milestoneRepository.findAll(
+                spaceKey, apiKey, projectKey)
     }
 
     fun findAllCategory(projectKey: String): List<Category> {

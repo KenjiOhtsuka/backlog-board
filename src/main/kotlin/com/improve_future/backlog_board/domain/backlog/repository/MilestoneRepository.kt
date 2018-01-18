@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class MilestoneRepository: AbstractBacklogRepository() {
-    fun findAll(projectKey: String): List<Milestone> {
+    fun findAll(spaceKey: String, apiKey: String, projectKey: String): List<Milestone> {
+        val backlogGateway = buildBacklogClient(spaceKey, apiKey)
         return backlogGateway.getMilestones(projectKey).map {
-            MilestoneFactory.createFromBacklogMilestone(backlogConfig.spaceId, it)
+            MilestoneFactory.createFromBacklogMilestone(spaceKey, it)
         }
     }
 }
