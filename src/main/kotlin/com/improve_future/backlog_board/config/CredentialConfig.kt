@@ -67,7 +67,9 @@ open class CredentialConfig : WebSecurityConfigurerAdapter() {
                 permitAll().
                 and().
                 authenticationProvider(userAuthenticationProvider).
-                authorizeRequests().anyRequest().authenticated()
+                authorizeRequests().anyRequest().authenticated().
+                and().
+                rememberMe()
         //and().
         http.csrf().
                 requireCsrfProtectionMatcher(
