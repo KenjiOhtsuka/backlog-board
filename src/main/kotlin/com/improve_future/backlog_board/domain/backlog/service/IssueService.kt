@@ -35,8 +35,11 @@ class IssueService {
         backlogRepository.updateStatus(id, statusId)
     }
 
-    fun update(id: Long, valueMap: MutableMap<String, Any?>): Issue {
+    fun update(
+            spaceKey: String, apiKey: String,
+            id: Long, valueMap: MutableMap<String, Any?>): Issue {
         valueMap["id"] = id
-        return issueRepository.update(valueMap)
+        return issueRepository.update(
+                spaceKey, apiKey, valueMap)
     }
 }

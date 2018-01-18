@@ -17,4 +17,11 @@ abstract class AbstractBacklogRepository {
                         apiKey(backlogConfig.apiKey)
         BacklogClientFactory(configure).newClient()
     }
+
+    protected fun buildBacklogClient(
+            spaceKey: String, apiKey: String): BacklogClient {
+        val configure: BacklogConfigure =
+                BacklogJpConfigure(spaceKey).apiKey(apiKey)
+        return BacklogClientFactory(configure).newClient()
+    }
 }
