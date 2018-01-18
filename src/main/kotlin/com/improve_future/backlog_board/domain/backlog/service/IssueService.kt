@@ -15,8 +15,8 @@ class IssueService {
     @Autowired
     lateinit private var backlogRepository: BacklogRepository
 
-    fun findIssue(id: Long): Issue {
-        return issueRepository.findOne(id)
+    fun findIssue(spaceKey: String, apiKey: String, id: Long): Issue {
+        return issueRepository.findOne(spaceKey, apiKey, id)
     }
 
     fun findAllNonParentIssue(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {

@@ -8,10 +8,10 @@ import com.nulabinc.backlog4j.Issue as BacklogIssue
 
 @Component
 object IssueRepository: AbstractBacklogRepository() {
-    fun findOne(id: Long): Issue {
+    fun findOne(spaceKey: String, apiKey: String, id: Long): Issue {
+        val backlogGateway = buildBacklogClient(spaceKey, apiKey)
         return IssueFactory.createFromBacklogIssue(
-                backlogConfig.spaceId,
-                backlogGateway.getIssue(id))
+                spaceKey, backlogGateway.getIssue(id))
     }
 
     fun update(

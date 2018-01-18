@@ -32,6 +32,8 @@ class IssueController {
     @ResponseBody
     fun showJson(
         @PathVariable id: Long): Map<String, Any?> {
-        return IssueJsonView.show(issueService.findIssue(id))
+        val user = SecurityContextHolder.getCurrentUser()
+        return IssueJsonView.show(
+                issueService.findIssue(user.spaceKey!!, user.apiKey!!, id))
     }
 }
