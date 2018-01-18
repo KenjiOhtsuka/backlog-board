@@ -67,7 +67,7 @@ tasks.withType(org.gradle.language.jvm.tasks.ProcessResources::class.java) {
     this.filter(
             mapOf(
                     "tokens" to mapOf(
-                            "profile" to (project.properties["profile"] ?: "default")
+                            "activeProfile" to (project.properties["activeProfile"] ?: "default")
                     )
             ),
             org.apache.tools.ant.filters.ReplaceTokens::class.java
