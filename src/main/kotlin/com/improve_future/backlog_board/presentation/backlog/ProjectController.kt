@@ -48,10 +48,13 @@ class ProjectController {
         val milestoneList = backlogService.findAllMilestone(
                 user.spaceKey!!, user.apiKey!!, projectKey)
         val issueList =
-            if (milestoneId != null) issueService.findAllNonParentIssue(projectKey, milestoneId, categoryId)
+            if (milestoneId != null) issueService.findAllNonParentIssue(
+                    user.spaceKey!!, user.apiKey!!,
+                    projectKey, milestoneId, categoryId)
             else emptyList()
 
-        val categoryList = backlogService.findAllCategory(projectKey)
+        val categoryList = backlogService.findAllCategory(
+                user.spaceKey!!, user.apiKey!!, projectKey)
 
         return BacklogView.board(
                 attributes,
@@ -75,9 +78,12 @@ class ProjectController {
 
         val milestoneList = backlogService.findAllMilestone(
                 user.spaceKey!!, user.apiKey!!, projectKey)
-        val issueList = issueService.findAllUnclosedIssue(projectKey, milestoneId, categoryId)
+        val issueList = issueService.findAllUnclosedIssue(
+                user.spaceKey!!, user.apiKey!!,
+                projectKey, milestoneId, categoryId)
 
-        val categoryList = backlogService.findAllCategory(projectKey)
+        val categoryList = backlogService.findAllCategory(
+                user.spaceKey!!, user.apiKey!!, projectKey)
 
         return BacklogView.oldBoard(
                 attributes,
@@ -98,8 +104,11 @@ class ProjectController {
             @PathVariable("key") projectKey: String,
             @RequestParam("category_id") categoryId: Long,
             redirectAttributes: RedirectAttributesModelMap): String {
-        val categoryList = categoryService.findAllCategory(projectKey)
-        val issueList = issueService.findAllIssueForGanttChart(projectKey)
+        val user = SecurityContextHolder.getCurrentUser()
+        val categoryList = categoryService.findAllCategory(
+                user.spaceKey!!, user.apiKey!!, projectKey)
+        val issueList = issueService.findAllIssueForGanttChart(
+                user.spaceKey!!, user.apiKey!!, projectKey)
         return ProjectView.gantt(redirectAttributes, projectKey, issueList)
     }
 
@@ -110,7 +119,9 @@ class ProjectController {
     fun issueList(
             @PathVariable("key") projectKey: String,
             attributes: RedirectAttributes): String {
-        val issueList = issueService.findAllUnclosedIssue(projectKey)
+        val user = SecurityContextHolder.getCurrentUser()
+        val issueList = issueService.findAllUnclosedIssue(
+                user.spaceKey!!, user.apiKey!!, projectKey)
         return BacklogView.index(
                 attributes, projectKey, issueList)
     }

@@ -25,9 +25,10 @@ class BacklogRepository: AbstractBacklogRepository() {
                     spaceKey, it) }
     }
 
-    fun findProject(key: String): Project {
+    fun findProject(spaceKey: String, apiKey: String, key: String): Project {
+        val backlogGateway = buildBacklogClient(spaceKey, apiKey)
         return ProjectFactory.createFromBacklogProject(
-                backlogConfig.spaceId,
+                spaceKey,
                 backlogGateway.getProject(key))
     }
 
@@ -35,8 +36,10 @@ class BacklogRepository: AbstractBacklogRepository() {
      * @param projectKey
      * Return all un-closed issues
      */
-    fun findAllUnclosedIssues(projectKey: String, milestoneId: Long?, categoryId: Long?): List<Issue> {
-        val project = findProject(projectKey)
+    fun findAllUnclosedIssues(
+            spaceKey: String, apiKey: String,
+            projectKey: String, milestoneId: Long?, categoryId: Long?): List<Issue> {
+        val project = findProject(spaceKey, apiKey, projectKey)
         val issueParam = GetIssueParam(listOf(project.id!!))
         if (milestoneId != null) issueParam.milestoneIds(listOf(milestoneId))
         if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
@@ -52,8 +55,9 @@ class BacklogRepository: AbstractBacklogRepository() {
         return findAllIssueMap(issueParam).values.toList()
     }
 
-    fun findAllIssues(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
-        val project = findProject(projectKey)
+    fun findAllIssues(
+            spaceKey: String, apiKey: String, projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
+        val project = findProject(spaceKey, apiKey, projectKey)
 
         var issueParam = GetIssueParam(listOf(project.id!!))
         issueParam.milestoneIds(listOf(milestoneId))
@@ -86,8 +90,8 @@ class BacklogRepository: AbstractBacklogRepository() {
         return issueList
     }
 
-    fun findAllIssuesInStartOrder(projectKey: String): List<Issue> {
-        val project = findProject(projectKey)
+    fun findAllIssuesInStartOrder(spaceKey: String, apiKey: String, projectKey: String): List<Issue> {
+        val project = findProject(spaceKey, apiKey, projectKey)
         val issueParam = GetIssueParam(listOf(project.id!!))
         issueParam.statuses(
                 listOf(

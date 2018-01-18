@@ -6,10 +6,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class CategoryRepository: AbstractBacklogRepository() {
-    fun findAllCategory(projectKey: String): List<Category> {
+    fun findAllCategory(
+            spaceKey: String, apiKey: String, projectKey: String): List<Category> {
+        val backlogGateway = buildBacklogClient(spaceKey, apiKey)
         return backlogGateway.getCategories(projectKey).map {
             CategoryFactory.createFromBacklogCategory(
-                    backlogConfig.spaceId, it)
+                    spaceKey, it)
         }
     }
 }

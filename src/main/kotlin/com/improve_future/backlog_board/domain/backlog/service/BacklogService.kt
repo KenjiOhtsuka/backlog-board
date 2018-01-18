@@ -41,7 +41,8 @@ class BacklogService {
                 spaceKey, apiKey, projectKey)
     }
 
-    fun findAllCategory(projectKey: String): List<Category> {
-        return categoryRepository.findAllCategory(projectKey)
+    fun findAllCategory(spaceKey: String, apiKey: String, projectKey: String): List<Category> {
+        return categoryRepository.findAllCategory(
+                spaceKey, apiKey, projectKey)
     }
 }

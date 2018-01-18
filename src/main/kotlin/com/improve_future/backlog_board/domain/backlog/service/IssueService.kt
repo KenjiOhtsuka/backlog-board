@@ -19,16 +19,22 @@ class IssueService {
         return issueRepository.findOne(spaceKey, apiKey, id)
     }
 
-    fun findAllNonParentIssue(projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
-        return backlogRepository.findAllIssues(projectKey, milestoneId, categoryId)
+    fun findAllNonParentIssue(
+            spaceKey: String, apiKey: String, projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
+        return backlogRepository.findAllIssues(
+                spaceKey, apiKey, projectKey, milestoneId, categoryId)
     }
 
-    fun findAllUnclosedIssue(projectKey: String, milestoneId: Long? = null, categoryId: Long? = null): List<Issue> {
-        return backlogRepository.findAllUnclosedIssues(projectKey, milestoneId, categoryId)
+    fun findAllUnclosedIssue(
+            spaceKey: String, apiKey: String, projectKey: String, milestoneId: Long? = null, categoryId: Long? = null): List<Issue> {
+        return backlogRepository.findAllUnclosedIssues(
+                spaceKey, apiKey, projectKey, milestoneId, categoryId)
     }
 
-    fun findAllIssueForGanttChart(projectKey: String): List<Issue> {
-        return backlogRepository.findAllIssuesInStartOrder(projectKey)
+    fun findAllIssueForGanttChart(
+            spaceKey: String, apiKey: String, projectKey: String): List<Issue> {
+        return backlogRepository.findAllIssuesInStartOrder(
+                spaceKey, apiKey, projectKey)
     }
 
     fun updateStatus(id: Long, statusId: Long) {
