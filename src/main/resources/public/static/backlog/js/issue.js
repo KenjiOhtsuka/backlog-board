@@ -60,7 +60,9 @@ $(function() {
                         var attribute = targetAttributeArray[i];
                         var value = issueJson[attribute]
                         switch (attribute) {
-                            case "detail": value = value.replace("\n", "<br>")
+                            case "detail":
+                                value = value.replace("\n", "<br>");
+                                break;
                         }
                         $("#" + divId + "_" + attribute).html(value);
                     }
