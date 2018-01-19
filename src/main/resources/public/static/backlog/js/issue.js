@@ -46,7 +46,8 @@ $(function() {
             }
         });
     $(".issue_tile").
-        click(function () {
+        click(function (e) {
+            if (e.target.tagName == 'A') return;
             jQuery.ajax({
                 url: "/issue/" + $(this).data("id"),
                 method: "get",
@@ -70,9 +71,13 @@ $(function() {
                 }
             });
         });
+
+    // update estimated hour
+    // update actual hour
+
     $(document).contextmenu("contextmenu", function (e) {
         e.preventDefault();
-        alert("");
+        alert("Under construction");
 //        $(".custom-menu").finish().toggle(100).
 //
 //        // In the right position (the mouse)
