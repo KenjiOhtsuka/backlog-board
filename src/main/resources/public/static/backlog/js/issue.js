@@ -58,7 +58,7 @@ $(function() {
                     ];
                     for (var i = 0; i < targetAttributeArray.length; ++i) {
                         var attribute = targetAttributeArray[i];
-                        var value = issueJson[attribute]
+                        var value = issueJson[attribute];
                         switch (attribute) {
                             case "detail":
                                 value = value.replace("\n", "<br>");
