@@ -58,7 +58,13 @@ $(function() {
                     ];
                     for (var i = 0; i < targetAttributeArray.length; ++i) {
                         var attribute = targetAttributeArray[i];
-                        $("#" + divId + "_" + attribute).text(issueJson[attribute]);
+                        var value = issueJson[attribute];
+                        switch (attribute) {
+                            case "detail":
+                                value = value.replace("\n", "<br>");
+                                break;
+                        }
+                        $("#" + divId + "_" + attribute).html(value);
                     }
                     $("#modal").modal('show');
                 }
