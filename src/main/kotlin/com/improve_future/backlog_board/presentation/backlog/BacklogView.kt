@@ -118,10 +118,18 @@ object BacklogView {
                     issue.isOverDue())
             if (issue.assignee != null) div { userIcon(issue.assignee!!) }
             +"Est. "
-            span("estimated_hour") { +issue.estimatedHour.toString() }
+            a {
+                classes = setOf("estimated_hour")
+                role = "button"
+                +issue.estimatedHour.toString()
+            }
             +" / "
             +"Act. "
-            span("actual_hour") { +issue.actualHour.toString() }
+            a {
+                classes = setOf("actual_hour")
+                role = "button"
+                +issue.actualHour.toString()
+            }
         }
 
         fun issuesOfThePhase(issues: List<Issue>, status: com.nulabinc.backlog4j.Issue.StatusType) {
@@ -199,13 +207,24 @@ object BacklogView {
             boardColumn("Close", issueList, BacklogIssue.StatusType.Closed)
         }
 
-        popUp() {
+        popUp {
             p { id = "modal_detail" }
             div {
                 +"Est. "
-                span { id = "modal_estimated_hour" }
+                a {
+                    role = "button"
+                    classes = setOf("estimated_hour")
+                    id = "modal_estimated_hour"
+                }
                 +" / Act. "
-                span { id = "modal_actual_hour" }
+                a {
+                    role = "button"
+                    classes = setOf("actual_hour")
+                    id = "modal_actual_hour"
+                }
+            }
+            div {
+                span { id = "modal_id" }
             }
         }
 
@@ -344,6 +363,9 @@ object BacklogView {
                     span { id = "modal_estimated_hour" }
                     +" / Act. "
                     span { id = "modal_actual_hour" }
+                }
+                div {
+                    span { id = "modal_id" }
                 }
             }
 

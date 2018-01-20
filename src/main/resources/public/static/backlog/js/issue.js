@@ -7,12 +7,41 @@ $(function() {
                      var val = $(this).text()
                      if (val != "null") sum += parseFloat(val);
                 });
-                $(tag).find("span." + className).first().text(sum);
+                $(tag).find("." + className).first().text(sum);
             };
             updateHour(this, "estimated_hour");
             updateHour(this, "actual_hour");
         });
     };
+
+    var updateIssue = function (id, newData) {
+        jQuery.ajax({
+            headers: {
+                "Content-Type": "application/json"
+            },
+            url: "/issue/" + id.toString(),
+            method: "patch",
+            data: JSON.stringify({
+                _method: "PATCH",
+                issue: newData
+            })
+        });
+    }
+
+    var updateIssueTile = function (id, data) {
+        var tileArray = $(".issue_tile[data-id=" + id.toString() + "]");
+        tileArray.each(function () {
+            for (var key in data) {
+                $(this).find("." + key).text(data[key]);
+            }
+        });
+    }
+
+    var updateModal = function (data) {
+        for (var key in data) {
+            $("#modal_" + key).text(data[key]);
+        }
+    }
 
     $(".sortable").
         sortable({
@@ -23,28 +52,19 @@ $(function() {
                     status_id: newStatusId
                 };
                 if (newStatusId == 4) {
-                    var actualHour = prompt("実績工数を入力してください。 Please input actual hours. (h)");
-                    if (actualHour != null && actualHour.match(/^[0-9]+(\.[0-9]+)?/) != null)
+                    var actualHour = promptFloat("Please input actual hours. (h)");
+                    if (actualHour != null && actualHour != undefined)
                         newData["actual_hour"] = parseFloat(actualHour);
                     else {
                         $(".sortable").sortable("cancel");
                         return;
                     }
                 }
-                jQuery.ajax({
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    url: "/issue/" + $(ui.item[0]).data("id"),
-                    method: "patch",
-                    data: JSON.stringify({
-                        _method: "PATCH",
-                        issue: newData
-                    })
-                });
+                updateIssue($(ui.item[0]).data("id"), newData);
                 updateHours();
             }
         });
+
     $(".issue_tile").
         click(function (e) {
             if (e.target.tagName == 'A') return;
@@ -55,11 +75,12 @@ $(function() {
                     var divId = "modal";
                     var issueJson = dataJson.data["issue_list"][0];
                     var targetAttributeArray = [
-                        "title", "detail", "estimated_hour", "actual_hour"
+                        "id", "title", "detail", "estimated_hour", "actual_hour"
                     ];
                     for (var i = 0; i < targetAttributeArray.length; ++i) {
                         var attribute = targetAttributeArray[i];
                         var value = issueJson[attribute];
+                        if (value === null) value = null
                         switch (attribute) {
                             case "detail":
                                 value = value.replace("\n", "<br>");
@@ -72,8 +93,45 @@ $(function() {
             });
         });
 
-    // update estimated hour
-    // update actual hour
+    function parsePromptFloat(value) {
+        if (value == null) return; // cancel
+        if (value.match(/^[0-9]+(\.[0-9]+)?/) != null)
+            return parseFloat(value);
+        if (value == "") return null; // null value
+        alert("Please input Float or Int value!");
+        return;
+    }
+
+    function promptFloat(message) {
+        var value = prompt(message);
+        return parsePromptFloat(value);
+    }
+
+    var hourClassArray = ["estimated_hour", 'actual_hour'];
+    for (var key in hourClassArray) {
+        var hourClass = hourClassArray[key]
+        $("." + hourClass).click(function (e) {
+            var domId = $(this).attr("id");
+            var onModal = (domId && domId.match(/^modal_/) != null);
+
+            var title = hourClass.split("_").map(function (element, index, array) {
+                return StringUtility.capitalizeFirstLetter(element);
+            }).join(" ");
+            var newValue = promptFloat("Update " + title + " to:");
+            if (newValue === undefined) return;
+            var newData = {};
+            newData[hourClass] = newValue;
+
+            var id;
+            if (onModal) id = parseInt($("#modal_id").text())
+            else id = parseInt($(event.target).closest(".issue_tile").data("id"));
+
+            updateIssue(id, newData);
+            updateIssueTile(id, newData);
+            if (onModal) updateModal(newData);
+            updateHours();
+        });
+    }
 
     $(document).contextmenu("contextmenu", function (e) {
         e.preventDefault();

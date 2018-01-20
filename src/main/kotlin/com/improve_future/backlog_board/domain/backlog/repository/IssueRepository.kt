@@ -22,6 +22,8 @@ object IssueRepository: AbstractBacklogRepository() {
             param.status(BacklogIssue.StatusType.valueOf(issueParam["status_id"] as Int))
         if (issueParam.containsKey("actual_hour"))
             param.actualHours((issueParam["actual_hour"] as Number).toFloat())
+        if (issueParam.containsKey("estimated_hour"))
+            param.estimatedHours((issueParam["estimated_hour"] as Number).toFloat())
         val backlogIssue = buildBacklogClient(spaceKey, apiKey).updateIssue(param)
         return IssueFactory.createFromBacklogIssue(
                 spaceKey, backlogIssue)
