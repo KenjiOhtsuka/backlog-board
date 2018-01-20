@@ -80,10 +80,10 @@ $(function() {
                     for (var i = 0; i < targetAttributeArray.length; ++i) {
                         var attribute = targetAttributeArray[i];
                         var value = issueJson[attribute];
-                        if (value === null) value = null
+                        if (value === null) value = "null";
                         switch (attribute) {
                             case "detail":
-                                value = value.replace("\n", "<br>");
+                                value = value.replace(/\n/g, "<br>");
                                 break;
                         }
                         $("#" + divId + "_" + attribute).html(value);
