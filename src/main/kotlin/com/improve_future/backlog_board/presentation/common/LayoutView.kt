@@ -61,6 +61,7 @@ object LayoutView: RedirectAttributesHandler() {
 
     fun HEAD.scriptTags(): Unit = {
         script(src = "https://code.jquery.com/jquery-3.2.1.min.js") {}
+        script(src = staticFile("js/base.js")) {}
     }()
 
     fun default(
