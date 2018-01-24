@@ -107,20 +107,23 @@ $(function() {
         return parsePromptFloat(value);
     }
 
-    var hourClassArray = ["estimated_hour", 'actual_hour'];
+    var hourClassArray = ["estimated_hour", "actual_hour"];
     for (var key in hourClassArray) {
         var hourClass = hourClassArray[key]
         $("." + hourClass).click(function (e) {
             var domId = $(this).attr("id");
+            var classNameList = this.className.split(" ").filter(i => i.match(/_hour$/));
+            if (classNameList.length === 0) return;
+            var className = classNameList[0];
             var onModal = (domId && domId.match(/^modal_/) != null);
 
-            var title = hourClass.split("_").map(function (element, index, array) {
+            var title = className.split("_").map(function (element, index, array) {
                 return StringUtility.capitalizeFirstLetter(element);
             }).join(" ");
             var newValue = promptFloat("Update " + title + " to:");
             if (newValue === undefined) return;
             var newData = {};
-            newData[hourClass] = newValue;
+            newData[className] = newValue;
 
             var id;
             if (onModal) id = parseInt($("#modal_id").text())
