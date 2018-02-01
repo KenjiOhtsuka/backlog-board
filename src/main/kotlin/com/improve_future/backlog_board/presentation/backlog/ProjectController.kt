@@ -1,6 +1,7 @@
 package com.improve_future.backlog_board.presentation.backlog
 
 import com.improve_future.backlog_board.base.SecurityContextHolder
+import com.improve_future.backlog_board.domain.backlog.model.IssueType
 import com.improve_future.backlog_board.domain.backlog.service.BacklogService
 import com.improve_future.backlog_board.domain.backlog.service.IssueService
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,6 +41,7 @@ class ProjectController {
     @ResponseBody
     fun board(
             @PathVariable("key") projectKey: String,
+            @RequestParam("issue_type_id", required = false) issueTypeId: Long? = null,
             @RequestParam("milestone_id", required = false) milestoneId: Long? = null,
             @RequestParam("category_id", required = false) categoryId: Long? = null,
             attributes: RedirectAttributes): String {
@@ -47,10 +49,13 @@ class ProjectController {
 
         val milestoneList = backlogService.findAllMilestone(
                 user.spaceKey!!, user.apiKey!!, projectKey)
+        val issueTypeList: List<IssueType> =
+                issueService.findAllIssueType(
+                        user.spaceKey!!, user.apiKey!!, projectKey)
         val issueList =
             if (milestoneId != null) issueService.findAllNonParentIssue(
                     user.spaceKey!!, user.apiKey!!,
-                    projectKey, milestoneId, categoryId)
+                    projectKey, issueTypeId, milestoneId, categoryId)
             else emptyList()
 
         val categoryList = backlogService.findAllCategory(
@@ -59,6 +64,8 @@ class ProjectController {
         return BacklogView.board(
                 attributes,
                 projectKey,
+                issueTypeId,
+                issueTypeList,
                 milestoneId,
                 milestoneList,
                 categoryId,
