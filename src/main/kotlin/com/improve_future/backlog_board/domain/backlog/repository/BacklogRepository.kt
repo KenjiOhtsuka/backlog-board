@@ -61,33 +61,29 @@ class BacklogRepository: AbstractBacklogRepository() {
             projectKey: String, issueTypeId: Long?, milestoneId: Long, categoryId: Long?): List<Issue> {
         val project = findProject(spaceKey, apiKey, projectKey)
 
-        var issueParam = GetIssueParam(listOf(project.id!!))
-        if (issueTypeId != null) issueParam.issueTypeIds(listOf(issueTypeId))
-        issueParam.milestoneIds(listOf(milestoneId))
-        if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
+        fun buildCommonIssueParam(): GetIssueParam {
+            var issueParam = GetIssueParam(listOf(project.id!!))
+            if (issueTypeId != null) issueParam.issueTypeIds(listOf(issueTypeId))
+            issueParam.milestoneIds(listOf(milestoneId))
+            if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
+            issueParam.resolutions(listOf(
+                    BacklogIssue.ResolutionType.NotSet,
+                    BacklogIssue.ResolutionType.CannotReproduce,
+                    BacklogIssue.ResolutionType.Fixed))
+            issueParam.sort(GetIssuesParams.SortKey.DueDate)
+            issueParam.order(GetIssuesParams.Order.Asc)
+            issueParam.count(100)
+            return issueParam
+        }
+
+        var issueParam = buildCommonIssueParam()
         issueParam.parentChildType(GetIssuesParams.ParentChildType.Child)
-        issueParam.resolutions(listOf(
-                BacklogIssue.ResolutionType.NotSet,
-                BacklogIssue.ResolutionType.CannotReproduce,
-                BacklogIssue.ResolutionType.Fixed))
-        issueParam.sort(GetIssuesParams.SortKey.DueDate)
-        issueParam.order(GetIssuesParams.Order.Asc)
-        issueParam.count(100)
 
         var issueList = findAllIssueList(
                 spaceKey, apiKey, issueParam)
 
-        issueParam = GetIssueParam(listOf(project.id!!))
-        issueParam.milestoneIds(listOf(milestoneId))
-        if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
+        issueParam = buildCommonIssueParam()
         issueParam.parentChildType(GetIssuesParams.ParentChildType.NotChildNotParent)
-        issueParam.resolutions(listOf(
-                BacklogIssue.ResolutionType.NotSet,
-                BacklogIssue.ResolutionType.CannotReproduce,
-                BacklogIssue.ResolutionType.Fixed))
-        issueParam.sort(GetIssuesParams.SortKey.DueDate)
-        issueParam.order(GetIssuesParams.Order.Asc)
-        issueParam.count(100)
 
         issueList += findAllIssueList(
                 spaceKey, apiKey, issueParam)
