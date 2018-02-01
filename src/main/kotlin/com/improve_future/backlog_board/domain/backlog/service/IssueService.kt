@@ -1,9 +1,10 @@
 package com.improve_future.backlog_board.domain.backlog.service
 
 import com.improve_future.backlog_board.domain.backlog.model.Issue
+import com.improve_future.backlog_board.domain.backlog.model.IssueType
 import com.improve_future.backlog_board.domain.backlog.repository.BacklogRepository
 import com.improve_future.backlog_board.domain.backlog.repository.IssueRepository
-import com.nulabinc.backlog4j.IssueType
+import com.improve_future.backlog_board.domain.backlog.repository.IssueTypeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -20,9 +21,10 @@ class IssueService {
     }
 
     fun findAllNonParentIssue(
-            spaceKey: String, apiKey: String, projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
+            spaceKey: String, apiKey: String, projectKey: String,
+            issueTypeId: Long?, milestoneId: Long, categoryId: Long?): List<Issue> {
         return backlogRepository.findAllIssues(
-                spaceKey, apiKey, projectKey, milestoneId, categoryId)
+                spaceKey, apiKey, projectKey, issueTypeId, milestoneId, categoryId)
     }
 
     fun findAllUnclosedIssue(
@@ -43,5 +45,10 @@ class IssueService {
         valueMap["id"] = id
         return issueRepository.update(
                 spaceKey, apiKey, valueMap)
+    }
+
+    fun findAllIssueType(
+            spaceKey: String, apiKey: String, projectKey: String): List<IssueType> {
+        return IssueTypeRepository.findAll(spaceKey, apiKey, projectKey)
     }
 }

@@ -58,10 +58,11 @@ class BacklogRepository: AbstractBacklogRepository() {
 
     fun findAllIssues(
             spaceKey: String, apiKey: String,
-            projectKey: String, milestoneId: Long, categoryId: Long?): List<Issue> {
+            projectKey: String, issueTypeId: Long?, milestoneId: Long, categoryId: Long?): List<Issue> {
         val project = findProject(spaceKey, apiKey, projectKey)
 
         var issueParam = GetIssueParam(listOf(project.id!!))
+        if (issueTypeId != null) issueParam.issueTypeIds(listOf(issueTypeId))
         issueParam.milestoneIds(listOf(milestoneId))
         if (categoryId != null) issueParam.categoryIds(listOf(categoryId))
         issueParam.parentChildType(GetIssuesParams.ParentChildType.Child)

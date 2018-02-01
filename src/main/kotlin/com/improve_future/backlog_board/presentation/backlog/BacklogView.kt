@@ -88,6 +88,8 @@ object BacklogView {
     fun board(
             redirectAttributes: RedirectAttributes,
             projectKey: String,
+            issueTypeId: Long?,
+            issueTypeList: List<IssueType>,
             milestoneId: Long?,
             milestoneList: List<Milestone>,
             categoryId: Long?,
@@ -139,6 +141,17 @@ object BacklogView {
 
         getForm() {
             classes = setOf("form-inline")
+            select {
+                name = "issue_type_id"
+                option {}
+                issueTypeList.forEach {
+                    option {
+                        value = it.id.toString()
+                        if (issueTypeId == it.id) selected = true
+                        +it.name.orEmpty()
+                    }
+                }
+            }
             select {
                 name = "milestone_id"
                 option { }
