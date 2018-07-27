@@ -2,6 +2,8 @@
 
 This application shows backlog issues as board.
 
+You can use it on [Heroku](https://backlog-board.herokuapp.com/project).
+
 ## Component
 
 This works on JDK 1.8.
