@@ -22,11 +22,10 @@ import org.springframework.stereotype.Component
 @Configuration
 @EnableWebSecurity
 @Order
-open class CredentialConfig : WebSecurityConfigurerAdapter() {
-
-    @Autowired
-    lateinit private var userAuthenticationProvider: UserAuthenticationProvider
-
+class CredentialConfig(
+    private val userAuthenticationProvider: UserAuthenticationProvider ,
+    private val accountService: AccountService
+) : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(web: WebSecurity) {
         web.ignoring().
@@ -75,9 +74,6 @@ open class CredentialConfig : WebSecurityConfigurerAdapter() {
                 requireCsrfProtectionMatcher(
                         AntPathRequestMatcher("*"))
     }
-
-    @Autowired
-    lateinit private var accountService: AccountService
 
     @Bean
     open fun preAuthenticatedAuthenticationProvider(): PreAuthenticatedAuthenticationProvider {
