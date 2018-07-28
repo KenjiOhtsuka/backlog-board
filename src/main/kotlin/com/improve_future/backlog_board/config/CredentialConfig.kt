@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component
 open class CredentialConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
-    lateinit private var userAuthenticationProvider: UserAuthenticationProvider
+    private lateinit var userAuthenticationProvider: UserAuthenticationProvider
 
     @Throws(Exception::class)
     override fun configure(web: WebSecurity) {
@@ -77,7 +77,7 @@ open class CredentialConfig : WebSecurityConfigurerAdapter() {
     }
 
     @Autowired
-    lateinit private var accountService: AccountService
+    private lateinit var accountService: AccountService
 
     @Bean
     open fun preAuthenticatedAuthenticationProvider(): PreAuthenticatedAuthenticationProvider {
