@@ -1,8 +1,6 @@
 package com.improve_future.backlog_board.utility
 
-import com.improve_future.backlog_board.utility.DateUtility
-import org.junit.Test
-import java.time.LocalDate
+import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
 
