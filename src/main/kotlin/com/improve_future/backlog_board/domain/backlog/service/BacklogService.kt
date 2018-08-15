@@ -1,13 +1,14 @@
 package com.improve_future.backlog_board.domain.backlog.service
 
+import com.improve_future.backlog_board.domain.backlog.model.Category
 import com.improve_future.backlog_board.domain.backlog.repository.BacklogRepository
 import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.model.Milestone
 import com.improve_future.backlog_board.domain.backlog.model.Project
+import com.improve_future.backlog_board.domain.backlog.repository.CategoryRepository
 import com.improve_future.backlog_board.domain.backlog.repository.MilestoneRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.YearMonth
 
 @Service
 class BacklogService {
@@ -21,24 +22,33 @@ class BacklogService {
         return backlogRepository.findAllIssues(projectKey)
     }
 
-    fun findAllIssueForGanttChart(projectKey: String): List<Issue> {
-        return backlogRepository.findAllIssuesInStartOrder(projectKey)
+    @Autowired
+    lateinit private var categoryRepository: CategoryRepository
+
+    fun findAllProject(spaceKey: String, apiKey: String): List<Project> {
+        return backlogRepository.findAllProjects(spaceKey, apiKey)
     }
 
-    fun findAllProject(): List<Project> {
-        return backlogRepository.findAllProjects()
+    fun retrieveUserIcon(
+            spaceKey: String, apiKey: String, userId: Long): ByteArray {
+        return backlogRepository.retrieveUserIcon(spaceKey, apiKey, userId)
     }
 
-    fun updateStatus(id: Long, statusId: Long) {
-        backlogRepository.updateStatus(id, statusId)
+    fun retrieveProjectIcon(
+            spaceKey: String, apiKey: String, projectKey: String): ByteArray {
+        return backlogRepository.retrieveProjectIcon(
+                spaceKey, apiKey, projectKey)
     }
 
-    fun retrieveUserIcon(userId: Long): ByteArray {
-        return backlogRepository.retrieveUserIcon(userId)
+    fun findAllMilestone(
+            spaceKey: String, apiKey: String, projectKey: String): List<Milestone> {
+        return milestoneRepository.findAll(
+                spaceKey, apiKey, projectKey)
     }
 
-    fun retrieveProjectIcon(projectKey: String): ByteArray {
-        return backlogRepository.retrieveProjectIcon(projectKey)
+    fun findAllCategory(spaceKey: String, apiKey: String, projectKey: String): List<Category> {
+        return categoryRepository.findAllCategory(
+                spaceKey, apiKey, projectKey)
     }
 
     fun findAllMilestone(projectKey: String): List<Milestone> {

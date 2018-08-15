@@ -7,10 +7,23 @@
 .priority_low {
     background-color: MintCream;
 }
-.issue_tile { list-style-type: none;
+.issue_tile {
+    list-style-type: none;
     margin: 3px 3px 3px 0;
-    padding: 2px; float: left; width: 100px; min-height: 90px; display: inline-block;
+    padding: 2px;
     border: gray solid 1px;
+    width: 100%;
+}
+.issue_tile.old {
+    float: left;
+    width: 100px;
+    min-height: 90px;
+    display: inline-block;
+    list-style-type: none;
+}
+
+.issue_tile:active {
+    /* transform: rotate(-15deg); */
 }
 
 .user_icon {
@@ -27,4 +40,17 @@
 .issue_term {
     min-height: 15px;
     background-color: #ccc;
+}
+
+.board_column {
+    padding: 3px;
+}
+
+.board_column_title {
+
+}
+.board_column_body {
+    padding: 3px;
+    background-color: gray;
+    height: 100%;
 }

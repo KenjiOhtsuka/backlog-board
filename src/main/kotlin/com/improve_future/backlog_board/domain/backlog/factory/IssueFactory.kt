@@ -2,6 +2,7 @@ package com.improve_future.backlog_board.domain.backlog.factory
 
 import com.improve_future.backlog_board.domain.backlog.model.Issue
 import com.improve_future.backlog_board.domain.backlog.model.User
+import com.nulabinc.backlog4j.IssueType
 import com.nulabinc.backlog4j.internal.json.customFields.DateCustomField
 import com.nulabinc.backlog4j.internal.json.customFields.NumericCustomField
 import com.nulabinc.backlog4j.Issue as BacklogIssue
@@ -15,6 +16,7 @@ object IssueFactory {
         issue.key = backlogIssue.issueKey
         issue.parentIssueId = backlogIssue.parentIssueId
         issue.title = backlogIssue.summary
+        issue.detail = backlogIssue.description
         issue.dueDate = backlogIssue.dueDate
         issue.startDate = backlogIssue.startDate
         issue.status = backlogIssue.status
@@ -25,6 +27,15 @@ object IssueFactory {
         issue.priorityId = backlogIssue.priority.id
         issue.creator = UserFactory.createFromBacklogUser(
                 spaceKey, backlogIssue.createdUser)
+        issue.estimatedHour = backlogIssue.estimatedHours
+        issue.actualHour = backlogIssue.actualHours
+        issue.categoryList = backlogIssue.category.map {
+            CategoryFactory.createFromBacklogCategory(spaceKey, it)
+        }
+        issue.milestoneList = backlogIssue.milestone.map {
+            MilestoneFactory.createFromBacklogMilestone(spaceKey, it)
+        }
+        issue.type = backlogIssue.issueType
 
         return issue
     }

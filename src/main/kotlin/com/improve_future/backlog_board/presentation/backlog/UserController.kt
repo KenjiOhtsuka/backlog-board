@@ -1,5 +1,6 @@
 package com.improve_future.backlog_board.presentation.backlog
 
+import com.improve_future.backlog_board.base.SecurityContextHolder
 import com.improve_future.backlog_board.domain.backlog.service.BacklogService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -15,14 +16,13 @@ class UserController {
     @Autowired
     lateinit var backlogService: BacklogService
 
-    @RequestMapping(
-            "{id}/icon",
-            method = arrayOf(RequestMethod.GET))
+    @GetMapping("{id}/icon")
     fun icon(
             @PathVariable id: Long,
             attributes: RedirectAttributes): HttpEntity<ByteArray> {
-
-        val imageByteArray = backlogService.retrieveUserIcon(id) //.toTypedArray()
+        val user = SecurityContextHolder.getCurrentUser()
+        val imageByteArray = backlogService.retrieveUserIcon(
+                user.spaceKey!!, user.apiKey!!, id) //.toTypedArray()
         val header = HttpHeaders()
         header.contentType = MediaType.IMAGE_GIF
         header.contentLength = imageByteArray.size.toLong()

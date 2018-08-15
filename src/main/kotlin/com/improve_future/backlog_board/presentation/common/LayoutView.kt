@@ -1,13 +1,10 @@
 package com.improve_future.backlog_board.presentation.common
 
-import com.fasterxml.jackson.databind.deser.std.StringArrayDeserializer
-import com.improve_future.backlog_board.presentation.core.MessageMap
 import com.improve_future.backlog_board.presentation.core.ModelMap
 import com.improve_future.backlog_board.presentation.core.RedirectAttributesHandler
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import org.springframework.ui.Model
-import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.io.StringWriter
 
 object LayoutView: RedirectAttributesHandler() {
@@ -58,12 +55,13 @@ object LayoutView: RedirectAttributesHandler() {
     }()
 
     fun HEAD.stylesheetTags(): Unit = {
-        styleLink("/css/base.css")
+        styleLink(staticFile("css/base.css"))
         styleLink("https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css")
     }()
 
     fun HEAD.scriptTags(): Unit = {
         script(src = "https://code.jquery.com/jquery-3.2.1.min.js") {}
+        script(src = staticFile("js/base.js")) {}
     }()
 
     fun default(
@@ -107,7 +105,7 @@ object LayoutView: RedirectAttributesHandler() {
                         }
                     }
 
-                    div("container-fluid") {
+                    div("container") {
                         block()
                     }
                     script(src = "https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js") {}
@@ -127,28 +125,6 @@ object LayoutView: RedirectAttributesHandler() {
                 body {
                     id = "main"
                     div("container-fluid mt10") {
-                        block()
-                    }
-                    script(src = "https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js") {}
-                    script(src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js") {}
-                }
-            }.toString()
-
-    fun popup(pageTitle: String = "", block: FlowContent.() -> Unit) =
-            StringWriter().
-                    appendln("<!DOCTYPE html>").
-                    appendHTML().html {
-                head {
-                    title {
-                        +pageTitle
-                    }
-                    metaTags()
-                    scriptTags()
-                    stylesheetTags()
-                }
-                body("mb10") {
-                    id = "main"
-                    div("container-fluid") {
                         block()
                     }
                     script(src = "https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js") {}
