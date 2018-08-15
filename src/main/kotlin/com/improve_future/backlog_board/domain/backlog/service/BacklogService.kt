@@ -13,17 +13,18 @@ import org.springframework.stereotype.Service
 @Service
 class BacklogService {
     @Autowired
-    lateinit private var backlogRepository: BacklogRepository
+    private lateinit var backlogRepository: BacklogRepository
 
     @Autowired
-    lateinit private var milestoneRepository: MilestoneRepository
-
-    fun findAllIssue(projectKey: String): List<Issue> {
-        return backlogRepository.findAllIssues(projectKey)
-    }
+    private lateinit var milestoneRepository: MilestoneRepository
 
     @Autowired
     lateinit private var categoryRepository: CategoryRepository
+
+//    fun findAllIssue(spaceKey: String, apiKey: String, projectKey: String): List<Issue> {
+//        return backlogRepository.findAllIssues(
+//                spaceKey, apiKey, projectKey)
+//    }
 
     fun findAllProject(spaceKey: String, apiKey: String): List<Project> {
         return backlogRepository.findAllProjects(spaceKey, apiKey)
@@ -49,9 +50,5 @@ class BacklogService {
     fun findAllCategory(spaceKey: String, apiKey: String, projectKey: String): List<Category> {
         return categoryRepository.findAllCategory(
                 spaceKey, apiKey, projectKey)
-    }
-
-    fun findAllMilestone(projectKey: String): List<Milestone> {
-        return milestoneRepository.findAll(projectKey)
     }
 }
