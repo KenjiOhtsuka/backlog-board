@@ -1,7 +1,6 @@
 import org.gradle.api.*
 import org.gradle.kotlin.dsl.*
 import org.gradle.plugin.*
-import org.gradle.script.lang.kotlin.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.js.translate.context.Namer.kotlin
 
@@ -9,19 +8,23 @@ group = "com.improve_future"
 version = "1.0-SNAPSHOT"
 
 buildscript {
-    val kotlinVersion = "1.2.51"
+    val kotlinVersion = "1.3.0-rc-116"
     extra["kotlin_version"] = kotlinVersion
 
     repositories {
         jcenter()
         mavenCentral()
+        maven("https://repo.spring.io/milestone")
+        maven("http://dl.bintray.com/kotlin/kotlin-eap")
+        maven("https://jcenter.bintray.com")
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.3" +
+        classpath(
+            "org.springframework.boot:spring-boot-gradle-plugin:2.0.5" +
                 ".RELEASE")
         classpath("org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
         classpath("org.jetbrains.kotlin:kotlin-reflect")
         classpath("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
         classpath("org.jetbrains.kotlin:kotlin-test-junit5:$kotlinVersion")
@@ -30,12 +33,14 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.2.51"
-    id("org.springframework.boot") version "2.0.3.RELEASE"
+    //id("org.jetbrains.kotlin.jvm") version "1.3.0-rc-116"
+    //id("org.jetbrains.kotlin.jvm") version "1.3.0-rc-57"
+    kotlin("jvm") version "1.2.61"
+    id("org.springframework.boot") version "2.0.5.RELEASE"
 }
 
 apply {
-    //kotlin("jvm") version "1.2.51"
+    //kotlin("jvm") version "1.2.61"
     plugin("io.spring.dependency-management")
     plugin("kotlin")
     plugin("kotlin-spring")
@@ -49,6 +54,10 @@ springBoot {
 repositories {
     mavenCentral()
     jcenter()
+    maven("https://repo.spring.io/milestone")
+    maven("http://dl.bintray.com/kotlin/kotlin-eap")
+    maven("https://jcenter.bintray.com")
+    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
 }
 
 dependencies {
@@ -58,6 +67,7 @@ dependencies {
     testCompile("org.jetbrains.kotlin:kotlin-test-junit5:$kotlinVersion")
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.boot:spring-boot-starter-webflux")
     // https://mvnrepository.com/artifact/org.json/json
     compile("org.json:json:20160810")
     compile("org.springframework.boot:spring-boot-starter-web")
