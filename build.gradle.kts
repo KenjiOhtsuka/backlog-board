@@ -8,7 +8,7 @@ group = "com.improve_future"
 version = "1.0-SNAPSHOT"
 
 buildscript {
-    val kotlinVersion = "1.3.0-rc-116"
+    val kotlinVersion = "1.3.0"
     extra["kotlin_version"] = kotlinVersion
 
     repositories {
@@ -20,7 +20,7 @@ buildscript {
     }
     dependencies {
         classpath(
-            "org.springframework.boot:spring-boot-gradle-plugin:2.0.5" +
+            "org.springframework.boot:spring-boot-gradle-plugin:2.1.0" +
                 ".RELEASE")
         classpath("org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
@@ -35,8 +35,8 @@ buildscript {
 plugins {
     //id("org.jetbrains.kotlin.jvm") version "1.3.0-rc-116"
     //id("org.jetbrains.kotlin.jvm") version "1.3.0-rc-57"
-    kotlin("jvm") version "1.2.61"
-    id("org.springframework.boot") version "2.0.5.RELEASE"
+    kotlin("jvm") version "1.3.0"
+    id("org.springframework.boot") version "2.1.0.RELEASE"
 }
 
 apply {
@@ -62,21 +62,20 @@ repositories {
 
 dependencies {
     val kotlinVersion = extra["kotlin_version"] as String
-    compile(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib-jdk8"))
     testCompile("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testCompile("org.jetbrains.kotlin:kotlin-test-junit5:$kotlinVersion")
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-security")
-    compile("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    //compile("org.springframework.boot:spring-boot-starter-webflux")
     // https://mvnrepository.com/artifact/org.json/json
-    compile("org.json:json:20160810")
-    compile("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.json:json:20160810")
 
     val kotlinxHtmlVersion = "0.6.11"
-    compile("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlinxHtmlVersion")
-    compile("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlinxHtmlVersion")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    compile("com.nulab-inc:backlog4j:2.2.0")
+    implementation("com.nulab-inc:backlog4j:2.2.0")
 }
 
 tasks.withType<KotlinCompile>(KotlinCompile::class.java).all {
