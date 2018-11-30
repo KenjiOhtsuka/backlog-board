@@ -109,7 +109,7 @@ class ProjectController {
     @ResponseBody
     fun gantt(
             @PathVariable("key") projectKey: String,
-            @RequestParam("category_id") categoryId: Long,
+            @RequestParam("category_id") categoryId: Long?,
             redirectAttributes: RedirectAttributesModelMap): String {
         val user = SecurityContextHolder.getCurrentUser()
         val categoryList = categoryService.findAllCategory(
